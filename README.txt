@@ -1,1 +1,0 @@
-Morning Quest PWA package\n\nFiles:\n- index.html\n- manifest.json\n- service-worker.js\n- icon-180.png\n- icon-192.png\n- icon-512.png\n\nHost the whole folder on GitHub Pages / Netlify / Cloudflare Pages.\nThen open the hosted link in Safari and tap Share -> Add to Home Screen.\n
