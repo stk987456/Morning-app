@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f6d0e8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Kim Quest">
+<title>Kim Morning Quest</title>
+<link rel="manifest" href="manifest.json">
+<style>
+:root{
+  --bg:#f7f1fb; --panel:rgba(255,255,255,.90); --text:#3a3562; --purple:#8f77ff; --pink:#ff79c9; --gold:#ffcb53;
+  --shadow:0 18px 36px rgba(107,88,170,.16); --safe-top:max(14px,env(safe-area-inset-top)); --safe-bottom:max(14px,env(safe-area-inset-bottom));
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
+html,body{margin:0;padding:0;background:linear-gradient(180deg,#f8f4ff,#fef7fb);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:var(--text)}
+body{max-width:900px;margin:0 auto;padding:var(--safe-top) 10px var(--safe-bottom)}
+button{border:none;border-radius:22px;padding:14px 18px;font-size:18px;font-weight:800;cursor:pointer}
+.primary{background:linear-gradient(135deg,#f4b7e8,var(--purple));color:white}
+.secondary{background:rgba(255,255,255,.85);color:var(--text)}
+.soft{background:rgba(255,240,248,.92);color:#bb4d7f}
+.topbar{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
+.pill{background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-radius:999px;padding:10px 14px;box-shadow:var(--shadow);font-weight:900}
+.stats{display:flex;gap:8px;flex-wrap:wrap}
+.hero{
+  position:relative; min-height:690px; border-radius:34px; overflow:hidden; box-shadow:var(--shadow);
+  background:url("hero-home.png") center/cover no-repeat;
+}
+.hero::after{
+  content:""; position:absolute; inset:0; background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.12) 40%, rgba(255,255,255,.22));
+}
+.overlay{position:relative; z-index:2; padding:18px}
+.bubble{
+  margin-left:auto; width:min(55%,430px); background:rgba(255,250,252,.90); backdrop-filter:blur(8px);
+  border-radius:34px; padding:22px; box-shadow:var(--shadow); margin-top:28px; margin-right:12px;
+}
+.bubble h1{margin:0; font-size:clamp(32px,6vw,56px); line-height:.98}
+.bubble p{margin:12px 0 0; font-size:clamp(19px,2.8vw,26px); line-height:1.25}
+.spark{color:#ffb84e}
+.expressive{display:inline-block; animation:bob 1.8s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.actionRow{display:grid; grid-template-columns:1.15fr 1fr 1fr; gap:12px; margin-top:20px}
+.actionRow button{padding:20px 18px; font-size:18px; box-shadow:var(--shadow)}
+.questPanel{
+  margin-top:18px; background:rgba(255,255,255,.95); border-radius:30px; padding:18px; box-shadow:var(--shadow)
+}
+.questHeader{display:flex; justify-content:space-between; align-items:center; gap:10px}
+.questHeader h2{margin:0; font-size:20px}
+.progressOuter{height:16px; background:#eee8e6; border-radius:999px; overflow:hidden; margin-top:12px}
+.progressFill{height:100%; width:0%; background:linear-gradient(90deg,#6fd36f,#48bb78); transition:width .35s ease}
+.missionGrid{display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-top:14px}
+.mission{
+  background:#fffaf6; border:2px solid rgba(228,220,232,.9); border-radius:24px; padding:14px 10px 12px; text-align:center;
+  display:flex; flex-direction:column; align-items:center; justify-content:space-between; min-height:205px;
+}
+.mission.current{border-color:#9174ff; box-shadow:0 0 0 3px rgba(145,116,255,.12)}
+.mission.done{background:#fbfff9}
+.mission.locked{opacity:.58}
+.mission .icon{font-size:54px; line-height:1}
+.mission .title{font-size:17px; font-weight:900; line-height:1.15; margin-top:8px}
+.mission .timerTag{margin-top:8px; font-size:12px; padding:7px 10px; border-radius:999px; background:#f2efff}
+.mission .startBtn{margin-top:10px; padding:11px 12px; font-size:16px; width:100%}
+.badgeOk{font-size:36px; line-height:1}
+.bottomNav{
+  position:sticky; bottom:0; z-index:3; margin-top:14px; padding-bottom:var(--safe-bottom);
+}
+.navWrap{
+  display:grid; grid-template-columns:repeat(5,1fr); gap:8px; background:rgba(255,255,255,.94); border-radius:28px; padding:10px; box-shadow:var(--shadow)
+}
+.navBtn{background:transparent; border-radius:18px; padding:10px 6px; text-align:center; font-size:14px; font-weight:900; color:#796f94}
+.navBtn.active{background:linear-gradient(135deg,#f2c2eb,#a387ff); color:white}
+.navAvatar{width:62px;height:62px;border-radius:50%;margin:-24px auto 0;background:url("avatar-kim.png") center/cover;border:4px solid #e6cdf7; box-shadow:var(--shadow)}
+.view{display:none}
+.view.active{display:block}
+.card{background:rgba(255,255,255,.92); border-radius:28px; padding:18px; box-shadow:var(--shadow); margin-bottom:12px}
+.shelf span{font-size:34px; display:inline-block; margin:4px 6px}
+input{width:100%;padding:13px 14px;font-size:16px;border-radius:16px;border:2px solid #ebe6ff;outline:none}
+.modal{position:fixed; inset:0; display:none; align-items:flex-end; justify-content:center; padding:14px; background:rgba(26,16,53,.25); z-index:30}
+.modal.show{display:flex}
+.sheet{width:min(100%,620px); background:rgba(255,255,255,.96); border-radius:30px; padding:20px; box-shadow:var(--shadow); backdrop-filter:blur(12px)}
+.timerAdjust{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:14px}
+.box{background:#faf8ff; border-radius:22px; padding:14px; text-align:center}
+.bigNum{font-size:38px; font-weight:900; margin:8px 0}
+.pm{display:flex; justify-content:center; gap:8px}
+.pm button{width:54px;height:54px;padding:0;border-radius:16px;font-size:28px}
+.circle{width:210px;height:210px;border-radius:50%; background:conic-gradient(var(--pink) 0deg,#eee7f4 0deg); display:grid; place-items:center; margin:8px auto 12px}
+.inner{width:160px;height:160px;border-radius:50%; background:white; display:grid; place-items:center}
+.timeText{font-size:42px; font-weight:900}
+.rewardGrid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:12px}
+.rewardBox{background:#fbf9ff; border-radius:18px; padding:12px; text-align:center; font-weight:900}
+.chest{font-size:94px; text-align:center; cursor:pointer}
+.tiny{font-size:13px; opacity:.72}
+@media (max-width: 720px){
+  .hero{min-height:760px}
+  .bubble{width:min(88%,430px)}
+  .actionRow{grid-template-columns:1fr; margin-top:16px}
+  .missionGrid{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="pill">🎮 Morning Quest</div>
+  <div class="stats">
+    <div class="pill" id="diamondChip">💎 0</div>
+    <div class="pill" id="starChip">⭐ 0</div>
+    <div class="pill" id="musicChip">🎵 0</div>
+    <div class="pill" id="streakChip">🔥 0</div>
+  </div>
+</div>
+
+<div id="homeView" class="view active">
+  <section class="hero">
+    <div class="overlay">
+      <div class="bubble">
+        <h1 id="heroGreeting">Good morning,<br>Kim!</h1>
+        <p id="heroMessage"><span class="expressive">✨</span> You’ve got big energy today! Let’s have an amazing day!</p>
+      </div>
+
+      <div class="actionRow">
+        <button class="primary" id="startBtn">👑 Start Adventure</button>
+        <button class="secondary" id="modeBtn">🌙 Bedtime Mode</button>
+        <button class="soft" id="soundBtn">🔊 Sound: On</button>
+      </div>
+
+      <div class="questPanel">
+        <div class="questHeader">
+          <h2>📋 Today's Quest</h2>
+          <div id="progressLabel" style="font-weight:900">0 / 5</div>
+        </div>
+        <div class="progressOuter"><div class="progressFill" id="progressFill"></div></div>
+
+        <div class="missionGrid" id="missionGrid"></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div id="mapView" class="view">
+  <div class="card">
+    <h2 style="margin:0 0 12px">🗺️ Mission Map</h2>
+    <div id="mapList" class="missionGrid"></div>
+  </div>
+</div>
+
+<div id="prizesView" class="view">
+  <div class="card">
+    <h2 style="margin:0 0 12px">🎁 Prizes</h2>
+    <div class="rewardGrid">
+      <div class="rewardBox" id="prizeDiamonds">💎 0</div>
+      <div class="rewardBox" id="prizeStars">⭐ 0</div>
+      <div class="rewardBox" id="prizeMusic">🎵 0</div>
+    </div>
+  </div>
+  <div class="card">
+    <h2 style="margin:0 0 10px">Sticker Shelf</h2>
+    <div class="shelf" id="stickerShelf">No stickers yet.</div>
+  </div>
+</div>
+
+<div id="settingsView" class="view">
+  <div class="card">
+    <h2 style="margin:0 0 12px">⚙️ Settings</h2>
+    <div style="display:grid; gap:10px">
+      <input id="nameInput" maxlength="20" placeholder="Child name">
+      <div class="row">
+        <button class="secondary" id="saveNameBtn">Save name</button>
+        <button class="secondary" id="resetDayBtn">Reset today</button>
+        <button class="secondary" id="fullResetBtn">Full reset</button>
+      </div>
+      <div class="tiny">Full reset clears progress, prizes, and streak.</div>
+    </div>
+  </div>
+</div>
+
+<div class="bottomNav">
+  <div class="navWrap">
+    <button class="navBtn active" data-view="homeView">🏠<br>Home</button>
+    <button class="navBtn" data-view="mapView">🗺️<br>Map</button>
+    <div style="text-align:center"><div class="navAvatar"></div></div>
+    <button class="navBtn" data-view="prizesView">🎁<br>Prizes</button>
+    <button class="navBtn" data-view="settingsView">⚙️<br>Settings</button>
+  </div>
+</div>
+
+<div class="modal" id="timerModal"><div class="sheet">
+  <div style="font-size:68px; text-align:center">⏱️</div>
+  <h2 id="timerTitle" style="text-align:center; margin:0">Set Timer</h2>
+  <p id="timerText" style="text-align:center; opacity:.8">Choose the time, then tap approve.</p>
+  <div class="timerAdjust">
+    <div class="box">
+      <div class="tiny">Minutes</div>
+      <div class="bigNum" id="minutesValue">2</div>
+      <div class="pm"><button class="secondary" id="minMinus">−</button><button class="secondary" id="minPlus">+</button></div>
+    </div>
+    <div class="box">
+      <div class="tiny">Seconds</div>
+      <div class="bigNum" id="secondsValue">0</div>
+      <div class="pm"><button class="secondary" id="secMinus">−</button><button class="secondary" id="secPlus">+</button></div>
+    </div>
+  </div>
+  <div class="row" style="justify-content:center; margin-top:14px">
+    <button class="secondary" id="cancelTimerBtn">Cancel</button>
+    <button class="primary" id="approveTimerBtn">Approve & Start</button>
+  </div>
+</div></div>
+
+<div class="modal" id="countdownModal"><div class="sheet" style="text-align:center">
+  <div class="circle" id="timerCircle"><div class="inner"><div class="timeText" id="countdownText">02:00</div></div></div>
+  <h2 id="countdownTitle" style="margin:0">Timer running</h2>
+  <div style="margin-top:8px; background:#f4efff; padding:8px 12px; border-radius:999px; display:inline-block" id="countdownMissionName">Wake up</div>
+  <div class="row" style="justify-content:center; margin-top:14px">
+    <button class="secondary" id="pauseTimerBtn">Pause</button>
+    <button class="secondary" id="cancelRunTimerBtn">Cancel</button>
+  </div>
+</div></div>
+
+<div class="modal" id="rewardModal"><div class="sheet">
+  <div style="font-size:72px; text-align:center" id="rewardEmoji">🎁</div>
+  <h2 id="rewardTitle" style="text-align:center; margin:0">Open your prize chest!</h2>
+  <p id="rewardText" style="text-align:center; opacity:.8">Tap the chest to open your reward.</p>
+  <div class="chest" id="chestBtn">🎁</div>
+  <div class="rewardGrid" id="rewardGrid" style="display:none">
+    <div class="rewardBox" id="rewardDiamond">💎 +1</div>
+    <div class="rewardBox" id="rewardSticker">⭐ +1</div>
+    <div class="rewardBox" id="rewardMusic">🎵 +0</div>
+  </div>
+  <div class="row" id="nextMissionRow" style="justify-content:center; margin-top:14px; display:none">
+    <button class="primary" id="nextMissionBtn">Next mission</button>
+  </div>
+</div></div>
+
+<script>
+const STORAGE_KEY="kim_expressive_final_v1";
+const MORNING=[
+  {id:"wake", title:"Wake up", icon:"🌞", defaultMin:1, defaultSec:0, kind:"tap", target:6, items:["☀️","✨","🌈"], sticker:"🌈"},
+  {id:"toilet", title:"Toilet", icon:"🚽", defaultMin:3, defaultSec:0, kind:"tap", target:5, items:["🧻","🧼","🚽","🫧"], sticker:"🫧"},
+  {id:"dress", title:"Get dressed", icon:"👗", defaultMin:4, defaultSec:0, kind:"choose", target:3, options:[["👕",1],["🩳",1],["🧦",1],["🧸",0],["🍭",0]], sticker:"👗"},
+  {id:"bed", title:"Make bed", icon:"🛏️", defaultMin:2, defaultSec:0, kind:"tap", target:4, items:["🛏️","🛌","✨","🧸"], sticker:"🪄"},
+  {id:"breakfast", title:"Breakfast", icon:"🥣", defaultMin:10, defaultSec:0, kind:"choose", target:3, options:[["🥣",1],["🍞",1],["🍎",1],["🍬",0],["🍟",0]], sticker:"🍓"}
+];
+const BEDTIME=[
+  {id:"pajamas", title:"Pajamas", icon:"🛌", defaultMin:4, defaultSec:0, kind:"choose", target:3, options:[["👚",1],["🩳",1],["🧦",1],["🎈",0],["🍪",0]], sticker:"🌙"},
+  {id:"toilet", title:"Toilet", icon:"🚽", defaultMin:3, defaultSec:0, kind:"tap", target:5, items:["🚽","🧻","🫧","🧼"], sticker:"🫧"},
+  {id:"teeth", title:"Brush teeth", icon:"🪥", defaultMin:2, defaultSec:0, kind:"tap", target:8, items:["🦠","✨","🫧"], sticker:"🪥"},
+  {id:"story", title:"Story", icon:"📚", defaultMin:8, defaultSec:0, kind:"choose", target:3, options:[["📚",1],["🛏️",1],["🧸",1],["📺",0],["🍭",0]], sticker:"📚"},
+  {id:"lights", title:"Lights out", icon:"🌙", defaultMin:1, defaultSec:0, kind:"tap", target:6, items:["🌙","⭐","✨"], sticker:"⭐"}
+];
+const EXPRESSIONS={
+  idle:{greet:(n,m)=>m==="morning"?`Good morning,<br>${n}!`:`Good evening,<br>${n}!`, msg:(m)=>m==="morning"?"✨ You’ve got big energy today! Let’s have an amazing day!":"🌙 Cozy time is here. Let’s get ready for a dreamy night!"},
+  ready:{greet:(n)=>`You can do it,<br>${n}!`, msg:()=> "💖 Tap a mission to set the timer and begin!"},
+  running:{greet:(n)=>`Go, go,<br>${n}!`, msg:()=> "⏱️ Timer is running. You’ve got this!"},
+  unlocked:{greet:(n)=>`Amazing,<br>${n}!`, msg:()=> "🎉 Timer finished! Your mission is now ready to play!"},
+  win:{greet:(n)=>`Woohoo,<br>${n}!`, msg:()=> "🌟 That was awesome! Open your prize chest!"},
+  complete:{greet:(n)=>`Champion,<br>${n}!`, msg:()=> "👑 All done! You finished today’s adventure!"}
+};
+let state={
+  name:"Kim", mode:"morning", soundOn:true,
+  current:0, started:false, completed:false,
+  diamonds:0, stars:0, music:0, streak:0, lastDate:"",
+  stickers:[],
+  timerSetupMission:null, timerMin:2, timerSec:0,
+  runningMission:null, timerRemaining:0, timerTotal:0, timerPaused:false, missionUnlocked:null,
+  missionProgress:0, reward:null, chestOpened:false, view:"homeView", expression:"idle"
+};
+let timerInt=null;
+const $=id=>document.getElementById(id);
+const tasks=()=>state.mode==="morning"?MORNING:BEDTIME;
+
+function save(){localStorage.setItem(STORAGE_KEY, JSON.stringify(state))}
+function load(){try{const raw=localStorage.getItem(STORAGE_KEY); if(raw) state={...state,...JSON.parse(raw)};}catch(e){}}
+function fmt(sec){const m=Math.floor(sec/60), s=sec%60; return String(m).padStart(2,"0")+":"+String(s).padStart(2,"0")}
+function todayStr(){const d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function beep(freq=520,dur=0.05){
+  if(!state.soundOn) return;
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)(), osc=ctx.createOscillator(), gain=ctx.createGain();
+    osc.type="sine"; osc.frequency.value=freq;
+    gain.gain.setValueAtTime(0.001, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.018, ctx.currentTime+0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+dur);
+    osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime+dur); osc.onended=()=>ctx.close();
+  }catch(e){}
+}
+function speak(text){
+  if(!state.soundOn || !("speechSynthesis" in window)) return;
+  try{
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    u.rate=0.92; u.pitch=1.18; u.volume=0.72;
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+function confetti(symbols=["✨","🎉","⭐"]){
+  const root=document.body;
+  for(let i=0;i<16;i++){
+    const d=document.createElement("div");
+    d.className="spark";
+    d.textContent=symbols[Math.floor(Math.random()*symbols.length)];
+    d.style.left=(Math.random()*100)+"vw"; d.style.top=(-5-Math.random()*20)+"px";
+    root.appendChild(d); setTimeout(()=>d.remove(),1400);
+  }
+}
+function setExpression(key){
+  state.expression=key;
+  const ex=EXPRESSIONS[key] || EXPRESSIONS.idle;
+  $("heroGreeting").innerHTML=ex.greet(state.name, state.mode);
+  $("heroMessage").innerHTML=ex.msg(state.mode);
+}
+function renderTop(){
+  $("diamondChip").textContent="💎 "+state.diamonds;
+  $("starChip").textContent="⭐ "+state.stars;
+  $("musicChip").textContent="🎵 "+state.music;
+  $("streakChip").textContent="🔥 "+state.streak;
+  $("nameInput").value=state.name;
+  $("modeBtn").textContent= state.mode==="morning" ? "🌙 Bedtime Mode" : "🌞 Morning Mode";
+  $("soundBtn").textContent= state.soundOn ? "🔊 Sound: On" : "🔈 Sound: Off";
+}
+function setView(view){
+  state.view=view; save();
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+  $(view).classList.add("active");
+  document.querySelectorAll(".navBtn").forEach(b=>b.classList.toggle("active", b.dataset.view===view));
+}
+function progressCount(){ return state.completed ? tasks().length : state.current; }
+function renderProgress(){
+  const total=tasks().length, done=state.completed?total:state.current;
+  $("progressLabel").textContent=done+" / "+total;
+  $("progressFill").style.width=Math.round((done/total)*100)+"%";
+}
+function renderMissions(targetId){
+  const holder=$(targetId); holder.innerHTML="";
+  tasks().forEach((t,i)=>{
+    const done = state.completed || i < state.current;
+    const current = !state.completed && i===state.current;
+    const unlocked = state.missionUnlocked===i;
+    const div=document.createElement("div");
+    div.className="mission "+(done?"done ":"")+(current?"current ":"")+(current||done?"":"locked ");
+    div.innerHTML = done
+      ? `<div class="icon">${t.icon}</div><div class="title">${t.title}</div><div class="badgeOk">✅</div>`
+      : current
+        ? `<div class="icon">${t.icon}</div><div class="title">${t.title}</div><div class="timerTag">${t.defaultMin}:${String(t.defaultSec).padStart(2,"0")}</div><button class="primary startBtn">${unlocked?"Play Mission":"Start Timer"}</button>`
+        : `<div class="icon">${t.icon}</div><div class="title">${t.title}</div><div class="timerTag">${t.defaultMin}:${String(t.defaultSec).padStart(2,"0")}</div>`;
+    if(current){
+      div.querySelector(".startBtn").onclick=()=> unlocked ? renderMiniGame() : openTimer(i);
+    }
+    holder.appendChild(div);
+  });
+}
+function renderMiniGame(){
+  const t=tasks()[state.current];
+  const area=$("missionGrid");
+  area.innerHTML="";
+  if(t.kind==="tap"){
+    for(let i=0;i<Math.max(t.target+1,6);i++){
+      const d=document.createElement("div");
+      d.className="mission current";
+      d.innerHTML=`<div class="icon">${t.items[Math.floor(Math.random()*t.items.length)]}</div><div class="title">Tap me</div>`;
+      d.onclick=()=>{
+        if(d.dataset.hit) return;
+        d.dataset.hit=1; d.style.opacity=.45; state.missionProgress++; beep(490,.04);
+        if(state.missionProgress>=t.target) finishMission();
+      };
+      area.appendChild(d);
+    }
+  } else {
+    [...t.options].sort(()=>Math.random()-0.5).forEach(([emoji,good])=>{
+      const d=document.createElement("div");
+      d.className="mission current";
+      d.innerHTML=`<div class="icon">${emoji}</div><div class="title">${good?"Choose":"Oops"}</div>`;
+      d.onclick=()=>{
+        if(d.dataset.hit) return;
+        if(good){ d.dataset.hit=1; d.style.opacity=.45; state.missionProgress++; beep(500,.04); if(state.missionProgress>=t.target) finishMission();}
+        else { beep(360,.04); }
+      };
+      area.appendChild(d);
+    });
+  }
+  setExpression("unlocked"); save();
+}
+function finishMission(){
+  const t=tasks()[state.current];
+  state.reward={diamond:1, star:1, music:(state.mode==="morning" && state.current===tasks().length-1)?1:0, sticker:t.sticker};
+  state.chestOpened=false;
+  setExpression("win");
+  $("rewardEmoji").textContent="🎁";
+  $("rewardTitle").textContent="Open your prize chest!";
+  $("rewardText").textContent="Kim, you did it!";
+  $("rewardModal").classList.add("show");
+  save();
+}
+function openChest(){
+  if(state.chestOpened || !state.reward) return;
+  state.chestOpened=true;
+  state.diamonds += state.reward.diamond;
+  state.stars += state.reward.star;
+  state.music += state.reward.music;
+  if(state.reward.sticker) state.stickers.push(state.reward.sticker);
+  $("rewardGrid").style.display="grid";
+  $("nextMissionRow").style.display="flex";
+  $("rewardDiamond").textContent="💎 +"+state.reward.diamond;
+  $("rewardSticker").textContent="⭐ +"+state.reward.star;
+  $("rewardMusic").textContent="🎵 +"+state.reward.music;
+  confetti(["💎","⭐","🎉"]); beep(500,.05); setTimeout(()=>beep(580,.05),90); speak("Great job Kim!");
+  renderPrizes(); renderTop(); save();
+}
+function nextMission(){
+  $("rewardModal").classList.remove("show");
+  $("rewardGrid").style.display="none";
+  $("nextMissionRow").style.display="none";
+  state.reward=null; state.chestOpened=false; state.missionUnlocked=null; state.missionProgress=0;
+  if(state.current < tasks().length-1){ state.current += 1; state.expression="ready"; }
+  else {
+    state.completed=true; setExpression("complete");
+    const today=todayStr();
+    if(state.lastDate!==today){
+      if(!state.lastDate) state.streak=1;
+      else {
+        const prev=new Date(state.lastDate+"T00:00:00"), curr=new Date(today+"T00:00:00");
+        const diff=Math.round((curr-prev)/86400000);
+        state.streak = diff===1 ? state.streak+1 : 1;
+      }
+      state.lastDate=today;
+    }
+  }
+  renderAll(); save();
+}
+function openTimer(i){
+  const t=tasks()[i];
+  state.timerSetupMission=i; state.timerMin=t.defaultMin; state.timerSec=t.defaultSec;
+  $("minutesValue").textContent=state.timerMin; $("secondsValue").textContent=state.timerSec;
+  $("timerTitle").textContent="Set timer for "+t.title;
+  $("timerText").textContent="Choose the time, then tap approve.";
+  $("timerModal").classList.add("show");
+}
+function startTimer(){
+  const total=state.timerMin*60 + state.timerSec;
+  if(total<=0){ alert("Please set at least 1 second."); return; }
+  $("timerModal").classList.remove("show");
+  state.runningMission=state.timerSetupMission;
+  state.timerRemaining=total; state.timerTotal=total; state.timerPaused=false;
+  setExpression("running");
+  renderCountdown();
+  $("countdownModal").classList.add("show");
+  beep(500,.05); speak("Timer started"); save();
+  clearInterval(timerInt);
+  timerInt=setInterval(()=>{
+    if(state.timerPaused) return;
+    state.timerRemaining = Math.max(0, state.timerRemaining - .25);
+    renderCountdown();
+    if(state.timerRemaining<=0){
+      clearInterval(timerInt); timerInt=null;
+      $("countdownModal").classList.remove("show");
+      state.missionUnlocked = state.runningMission;
+      state.runningMission = null;
+      setExpression("unlocked");
+      confetti(["⏱️","✨","🎉"]); beep(520,.05); setTimeout(()=>beep(620,.05),120);
+      speak("Timer done! Your mission is ready!");
+      renderAll(); save();
+    }
+  },250);
+}
+function renderCountdown(){
+  const remain=Math.ceil(state.timerRemaining), total=Math.max(1,state.timerTotal);
+  $("countdownText").textContent=fmt(remain);
+  $("countdownMissionName").textContent=tasks()[state.runningMission]?.title || "Mission";
+  $("countdownTitle").textContent=state.timerPaused?"Paused":"Timer running";
+  $("pauseTimerBtn").textContent=state.timerPaused?"Resume":"Pause";
+  const deg=Math.round(((total-remain)/total)*360);
+  $("timerCircle").style.background=`conic-gradient(var(--pink) ${deg}deg,#eee7f4 ${deg}deg)`;
+}
+function renderPrizes(){
+  $("prizeDiamonds").textContent="💎 "+state.diamonds;
+  $("prizeStars").textContent="⭐ "+state.stars;
+  $("prizeMusic").textContent="🎵 "+state.music;
+  $("stickerShelf").innerHTML = state.stickers.length ? state.stickers.map(s=>`<span>${s}</span>`).join("") : "No stickers yet.";
+}
+function renderAll(){
+  renderTop(); renderProgress(); renderMissions("missionGrid"); renderMissions("mapList"); renderPrizes();
+  if(state.completed) setExpression("complete");
+  else if(state.missionUnlocked===state.current) setExpression("unlocked");
+  else if(state.started) setExpression("ready");
+  else setExpression("idle");
+}
+function startAdventure(){
+  state.started=true; state.completed=false; state.current=0; state.missionUnlocked=null; state.missionProgress=0;
+  setExpression("ready"); renderAll(); setView("homeView"); save();
+}
+function resetToday(){
+  state.started=false; state.completed=false; state.current=0; state.missionUnlocked=null; state.missionProgress=0; state.reward=null;
+  clearInterval(timerInt); timerInt=null; $("countdownModal").classList.remove("show"); $("timerModal").classList.remove("show"); $("rewardModal").classList.remove("show");
+  renderAll(); save();
+}
+function fullReset(){
+  localStorage.removeItem(STORAGE_KEY);
+  location.reload();
+}
+document.querySelectorAll(".navBtn").forEach(b=>b.onclick=()=>setView(b.dataset.view));
+$("startBtn").onclick=startAdventure;
+$("modeBtn").onclick=()=>{ state.mode = state.mode==="morning" ? "bedtime" : "morning"; resetToday(); };
+$("soundBtn").onclick=()=>{ state.soundOn=!state.soundOn; renderTop(); if(state.soundOn) beep(500,.04); save(); };
+$("saveNameBtn").onclick=()=>{ state.name = $("nameInput").value.trim() || "Kim"; renderAll(); save(); };
+$("resetDayBtn").onclick=resetToday;
+$("fullResetBtn").onclick=()=>{ if(confirm("Clear all saved progress and prizes?")) fullReset(); };
+$("minMinus").onclick=()=>{ state.timerMin=Math.max(0,state.timerMin-1); $("minutesValue").textContent=state.timerMin; };
+$("minPlus").onclick=()=>{ state.timerMin=Math.min(59,state.timerMin+1); $("minutesValue").textContent=state.timerMin; };
+$("secMinus").onclick=()=>{ state.timerSec=Math.max(0,state.timerSec-5); $("secondsValue").textContent=state.timerSec; };
+$("secPlus").onclick=()=>{ state.timerSec=Math.min(55,state.timerSec+5); $("secondsValue").textContent=state.timerSec; };
+$("cancelTimerBtn").onclick=()=>$("timerModal").classList.remove("show");
+$("approveTimerBtn").onclick=startTimer;
+$("pauseTimerBtn").onclick=()=>{ state.timerPaused=!state.timerPaused; renderCountdown(); save(); };
+$("cancelRunTimerBtn").onclick=()=>{ clearInterval(timerInt); timerInt=null; $("countdownModal").classList.remove("show"); state.runningMission=null; setExpression("ready"); save(); };
+$("chestBtn").onclick=openChest;
+$("nextMissionBtn").onclick=nextMission;
+
+load(); renderAll();
+if("serviceWorker" in navigator){ window.addEventListener("load", ()=> navigator.serviceWorker.register("service-worker.js").catch(()=>{})); }
+</script>
+</body>
+</html>
