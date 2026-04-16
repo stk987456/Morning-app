@@ -3,519 +3,446 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#f6d0e8">
+<meta name="theme-color" content="#ffdcb4">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Kim Quest">
 <title>Kim Morning Quest</title>
 <link rel="manifest" href="manifest.json">
 <style>
 :root{
-  --bg:#f7f1fb; --panel:rgba(255,255,255,.90); --text:#3a3562; --purple:#8f77ff; --pink:#ff79c9; --gold:#ffcb53;
-  --shadow:0 18px 36px rgba(107,88,170,.16); --safe-top:max(14px,env(safe-area-inset-top)); --safe-bottom:max(14px,env(safe-area-inset-bottom));
+  --sky:#dff2ff;--cream:#fff8ef;--lav:#ddd4ff;--peach:#ffd9b4;--blush:#ffd8eb;--mint:#dff9dd;--berry:#ff6aa7;--gold:#f3b845;
+  --ink:#453b6b;--muted:#7c7597;--panel:rgba(255,250,244,.9);--line:rgba(164,144,219,.26);
+  --shadow:0 20px 48px rgba(120,93,182,.18);--soft:0 10px 24px rgba(136,109,190,.12);
+  --safe-top:max(14px,env(safe-area-inset-top));--safe-bottom:max(16px,env(safe-area-inset-bottom));
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
-html,body{margin:0;padding:0;background:linear-gradient(180deg,#f8f4ff,#fef7fb);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:var(--text)}
-body{max-width:900px;margin:0 auto;padding:var(--safe-top) 10px var(--safe-bottom)}
-button{border:none;border-radius:22px;padding:14px 18px;font-size:18px;font-weight:800;cursor:pointer}
-.primary{background:linear-gradient(135deg,#f4b7e8,var(--purple));color:white}
-.secondary{background:rgba(255,255,255,.85);color:var(--text)}
-.soft{background:rgba(255,240,248,.92);color:#bb4d7f}
-.topbar{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
-.pill{background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-radius:999px;padding:10px 14px;box-shadow:var(--shadow);font-weight:900}
-.stats{display:flex;gap:8px;flex-wrap:wrap}
-.hero{
-  position:relative; min-height:690px; border-radius:34px; overflow:hidden; box-shadow:var(--shadow);
-  background:url("hero-home.png") center/cover no-repeat;
+html{height:100%;height:-webkit-fill-available}
+body{
+  margin:0;min-height:100vh;min-height:100svh;min-height:100dvh;min-height:-webkit-fill-available;overflow-x:hidden;touch-action:manipulation;
+  font-family:"Avenir Next","Trebuchet MS","Segoe UI",sans-serif;color:var(--ink);
+  background:
+    radial-gradient(circle at top left,rgba(255,240,181,.9),transparent 34%),
+    radial-gradient(circle at top right,rgba(255,201,228,.65),transparent 28%),
+    linear-gradient(180deg,#beddff 0%,#eef9ff 28%,#fff5eb 72%,#ffe7f3 100%);
 }
-.hero::after{
-  content:""; position:absolute; inset:0; background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.12) 40%, rgba(255,255,255,.22));
-}
-.overlay{position:relative; z-index:2; padding:18px}
-.bubble{
-  margin-left:auto; width:min(55%,430px); background:rgba(255,250,252,.90); backdrop-filter:blur(8px);
-  border-radius:34px; padding:22px; box-shadow:var(--shadow); margin-top:28px; margin-right:12px;
-}
-.bubble h1{margin:0; font-size:clamp(32px,6vw,56px); line-height:.98}
-.bubble p{margin:12px 0 0; font-size:clamp(19px,2.8vw,26px); line-height:1.25}
-.spark{color:#ffb84e}
-.expressive{display:inline-block; animation:bob 1.8s ease-in-out infinite}
-@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
-.actionRow{display:grid; grid-template-columns:1.15fr 1fr 1fr; gap:12px; margin-top:20px}
-.actionRow button{padding:20px 18px; font-size:18px; box-shadow:var(--shadow)}
-.questPanel{
-  margin-top:18px; background:rgba(255,255,255,.95); border-radius:30px; padding:18px; box-shadow:var(--shadow)
-}
-.questHeader{display:flex; justify-content:space-between; align-items:center; gap:10px}
-.questHeader h2{margin:0; font-size:20px}
-.progressOuter{height:16px; background:#eee8e6; border-radius:999px; overflow:hidden; margin-top:12px}
-.progressFill{height:100%; width:0%; background:linear-gradient(90deg,#6fd36f,#48bb78); transition:width .35s ease}
-.missionGrid{display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-top:14px}
-.mission{
-  background:#fffaf6; border:2px solid rgba(228,220,232,.9); border-radius:24px; padding:14px 10px 12px; text-align:center;
-  display:flex; flex-direction:column; align-items:center; justify-content:space-between; min-height:205px;
-}
-.mission.current{border-color:#9174ff; box-shadow:0 0 0 3px rgba(145,116,255,.12)}
-.mission.done{background:#fbfff9}
-.mission.locked{opacity:.58}
-.mission .icon{font-size:54px; line-height:1}
-.mission .title{font-size:17px; font-weight:900; line-height:1.15; margin-top:8px}
-.mission .timerTag{margin-top:8px; font-size:12px; padding:7px 10px; border-radius:999px; background:#f2efff}
-.mission .startBtn{margin-top:10px; padding:11px 12px; font-size:16px; width:100%}
-.badgeOk{font-size:36px; line-height:1}
-.bottomNav{
-  position:sticky; bottom:0; z-index:3; margin-top:14px; padding-bottom:var(--safe-bottom);
-}
-.navWrap{
-  display:grid; grid-template-columns:repeat(5,1fr); gap:8px; background:rgba(255,255,255,.94); border-radius:28px; padding:10px; box-shadow:var(--shadow)
-}
-.navBtn{background:transparent; border-radius:18px; padding:10px 6px; text-align:center; font-size:14px; font-weight:900; color:#796f94}
-.navBtn.active{background:linear-gradient(135deg,#f2c2eb,#a387ff); color:white}
-.navAvatar{width:62px;height:62px;border-radius:50%;margin:-24px auto 0;background:url("avatar-kim.png") center/cover;border:4px solid #e6cdf7; box-shadow:var(--shadow)}
+body.modalOpen{overflow:hidden}
+button,input{font:inherit}
+button{-webkit-appearance:none;appearance:none;border:none;cursor:pointer;touch-action:manipulation}
+.app{width:min(100vw,430px);min-height:calc(var(--vh,1vh)*100);min-height:100svh;min-height:100dvh;margin:0 auto;padding:calc(var(--safe-top) + 6px) 12px calc(var(--safe-bottom) + 18px);display:flex;flex-direction:column;gap:14px}
+.glass{-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+.topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.pill,.chip,.miniPill,.sun,.navWrap,.card,.questPanel,.sheet{box-shadow:var(--shadow)}
+.pill,.chip,.miniPill,.sun,.navWrap,.card,.questPanel,.sheet{background:rgba(255,255,255,.84)}
+.pill{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:999px;font-weight:900;line-height:1.05}
+.pillIcon{width:34px;height:34px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#a58cff,#6f79ff);color:#fff;font-size:20px}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;flex:1}
+.chip{min-height:48px;border-radius:22px;display:flex;align-items:center;justify-content:center;font-weight:900}
 .view{display:none}
 .view.active{display:block}
-.card{background:rgba(255,255,255,.92); border-radius:28px; padding:18px; box-shadow:var(--shadow); margin-bottom:12px}
-.shelf span{font-size:34px; display:inline-block; margin:4px 6px}
-input{width:100%;padding:13px 14px;font-size:16px;border-radius:16px;border:2px solid #ebe6ff;outline:none}
-.modal{position:fixed; inset:0; display:none; align-items:flex-end; justify-content:center; padding:14px; background:rgba(26,16,53,.25); z-index:30}
+.hero{
+  position:relative;min-height:446px;border-radius:34px;overflow:hidden;box-shadow:var(--shadow);
+  background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,250,244,.06)),url("hero-home.png") center 18%/cover no-repeat;
+}
+.hero:before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.08) 0%,rgba(255,255,255,.12) 26%,rgba(255,250,244,.62) 100%),
+    radial-gradient(circle at 78% 16%,rgba(255,236,132,.82),transparent 12%),
+    radial-gradient(circle at 82% 18%,rgba(255,206,111,.4),transparent 18%);
+}
+.heroInner{position:relative;z-index:1;min-height:446px;padding:18px;display:flex;flex-direction:column;justify-content:space-between}
+.heroTop{display:flex;justify-content:flex-end}
+.sun{min-width:60px;min-height:60px;border-radius:24px;display:grid;place-items:center;font-size:30px;background:rgba(255,250,228,.78);color:#ffae32;animation:sunPulse 4s ease-in-out infinite}
+.bubble{
+  width:min(74%,292px);margin:20px 0 0 auto;padding:20px 20px 18px;border-radius:34px;background:rgba(255,251,246,.82);
+  border:2px solid rgba(255,255,255,.6);box-shadow:var(--soft);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);position:relative
+}
+.bubble:after{
+  content:"";position:absolute;left:14px;bottom:-15px;width:28px;height:28px;background:inherit;border-left:2px solid rgba(255,255,255,.6);border-bottom:2px solid rgba(255,255,255,.6);transform:rotate(28deg);border-bottom-left-radius:10px
+}
+.eyebrow{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.62);color:var(--muted);font-size:12px;font-weight:900;letter-spacing:.06em;text-transform:uppercase}
+.bubble h1,.section h2,.card h2{margin:0;font-family:"Avenir Next Condensed","Avenir Next","Trebuchet MS",sans-serif;letter-spacing:-.03em}
+.bubble h1{margin-top:10px;font-size:clamp(34px,9vw,52px);line-height:.92}
+.bubble .name{color:var(--berry)}
+.bubble p{margin:12px 0 0;font-size:18px;line-height:1.32;color:#5e547f}
+.sparkle{display:inline-block;animation:bob 1.8s ease-in-out infinite}
+.actionRow{display:grid;grid-template-columns:1.15fr 1fr 1fr;gap:10px;margin-top:12px}
+.action{
+  border-radius:24px;padding:16px 14px;text-align:left;display:flex;align-items:center;gap:12px;box-shadow:var(--soft);color:var(--ink)
+}
+.action strong{display:block;font-size:16px;line-height:1.05}
+.action small{display:block;margin-top:5px;color:rgba(69,59,107,.72);font-size:12px;font-weight:700}
+.actionIcon{flex:0 0 42px;width:42px;height:42px;border-radius:16px;display:grid;place-items:center;font-size:21px;background:rgba(255,255,255,.58)}
+.action.primary{background:linear-gradient(135deg,rgba(236,219,255,.95),rgba(206,182,255,.96))}
+.action.soft{background:linear-gradient(135deg,rgba(255,244,205,.95),rgba(255,232,172,.96))}
+.action.warm{background:linear-gradient(135deg,rgba(255,219,228,.95),rgba(255,202,217,.96))}
+.section,.card{border-radius:30px;border:1px solid rgba(255,255,255,.6);padding:18px;-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
+.section{margin-top:-56px;position:relative;z-index:2}
+.head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.section h2,.card h2{margin-top:4px;font-size:30px;line-height:.92}
+.progressMeta{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px}
+.miniPill{min-height:36px;padding:6px 12px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;white-space:nowrap}
+.miniPill.muted{background:rgba(255,242,214,.78);color:#98743e}
+.bar{height:14px;margin-top:14px;border-radius:999px;background:rgba(187,167,216,.22);overflow:hidden}
+.fill{height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,#77d57f,#4fbb75 55%,#3badb3 100%);transition:width .35s ease}
+.missionRow{
+  display:grid;grid-auto-flow:column;grid-auto-columns:minmax(174px,174px);gap:12px;margin-top:16px;overflow-x:auto;padding:2px 2px 6px;
+  scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain
+}
+.missionRow::-webkit-scrollbar{display:none}
+.missionBoard{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}
+.mission{
+  position:relative;padding:14px;border-radius:24px;border:1px solid rgba(255,255,255,.78);
+  background:linear-gradient(180deg,rgba(255,255,255,.84),rgba(255,252,247,.9));box-shadow:var(--soft);overflow:hidden;scroll-snap-align:start
+}
+.mission:before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,var(--accent-soft) 0%,rgba(255,255,255,0) 48%);opacity:.92;pointer-events:none}
+.mission>*{position:relative;z-index:1}
+.mission.done{background:linear-gradient(180deg,rgba(244,255,244,.92),rgba(251,255,250,.96))}
+.mission.running{box-shadow:0 0 0 3px rgba(255,166,92,.18),var(--soft)}
+.mission.unlocked{box-shadow:0 0 0 3px rgba(141,123,255,.16),var(--soft)}
+.mission.waiting{opacity:.66}
+.mTop{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.mIcon{width:56px;height:56px;border-radius:20px;display:grid;place-items:center;font-size:30px;background:var(--accent-soft);box-shadow:inset 0 1px 0 rgba(255,255,255,.64)}
+.mState,.mTime{display:inline-flex;align-items:center;justify-content:center;min-height:28px;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase}
+.mState{background:rgba(255,255,255,.78);color:var(--muted)}
+.mission h3{margin:14px 0 6px;font-size:19px;line-height:1}
+.mission p{margin:0;min-height:38px;color:#62597f;font-size:13px;line-height:1.28}
+.mMeta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px}
+.mTime{background:rgba(221,212,255,.45);color:#5b4c87}
+.mBtn{width:100%;margin-top:14px;min-height:46px;border-radius:18px;padding:10px 14px;background:linear-gradient(135deg,var(--accent),var(--accent-strong));color:#fff;font-size:15px;font-weight:900;box-shadow:0 10px 18px rgba(129,103,201,.18)}
+.mBtn.secondary{background:rgba(255,255,255,.84);color:var(--ink);box-shadow:none}
+.mBtn:disabled{opacity:.75;cursor:default}
+.play{
+  margin-top:16px;padding:16px;border-radius:24px;background:linear-gradient(180deg,rgba(245,240,255,.82),rgba(255,252,247,.94));border:1px solid rgba(255,255,255,.66)
+}
+.playHead,.playMeta,.row,.modalActions{display:flex;gap:10px;flex-wrap:wrap}
+.playHead,.playMeta{align-items:flex-start;justify-content:space-between}
+.playHead h3{margin:5px 0 0;font-size:24px;line-height:.95}
+.playHint{margin:10px 0 0;color:#655d83;font-size:14px;line-height:1.32}
+.playGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+.playCard{
+  min-height:124px;border-radius:22px;padding:12px;background:rgba(255,255,255,.85);border:1px solid rgba(255,255,255,.7);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;box-shadow:var(--soft);transition:transform .16s ease,opacity .16s ease
+}
+.playCard:active{transform:scale(.97)}
+.playCard.hit{opacity:.48;transform:scale(.95)}
+.playCard.miss{animation:shake .28s ease}
+.pIcon{font-size:36px;line-height:1}.pLabel{font-size:14px;font-weight:900;color:#62597f}
+.card+.card{margin-top:14px}
+.card p,.tiny{color:#655d83;line-height:1.35}
+.rewardGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:14px}
+.rewardBox{min-height:80px;padding:12px;border-radius:20px;background:rgba(255,255,255,.78);display:grid;place-items:center;text-align:center;font-weight:900}
+.shelf{min-height:74px;padding:12px;border-radius:22px;background:rgba(255,255,255,.68);display:flex;flex-wrap:wrap;gap:8px}
+.shelf span{min-width:48px;height:48px;border-radius:16px;display:grid;place-items:center;font-size:28px;background:rgba(255,255,255,.88)}
+input{width:100%;min-height:52px;padding:14px 16px;border-radius:18px;border:2px solid rgba(221,212,255,.82);background:rgba(255,255,255,.84);color:var(--ink);outline:none}
+input:focus{border-color:#b59dff;box-shadow:0 0 0 3px rgba(181,157,255,.16)}
+.btn,.ghost{min-height:48px;border-radius:18px;padding:12px 16px;font-size:15px;font-weight:900}
+.btn{background:linear-gradient(135deg,#eddcff,#cdbdff);color:#fff}
+.ghost{background:rgba(255,255,255,.82);color:var(--ink)}
+.bottomNav{position:sticky;bottom:0;z-index:9}
+.navWrap{
+  display:grid;grid-template-columns:1fr 1fr 1.24fr 1fr 1fr;align-items:end;gap:8px;padding:10px 10px 8px;border-radius:30px;border:1px solid rgba(255,255,255,.68);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)
+}
+.navBtn{min-height:66px;border-radius:20px;background:transparent;color:#7a7495;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:13px;font-weight:900}
+.navBtn .emo{font-size:22px;line-height:1}
+.navBtn.active{background:linear-gradient(135deg,rgba(242,198,235,.92),rgba(202,186,255,.92));color:#fff}
+.avatarDock{margin-top:-34px;background:transparent;display:flex;flex-direction:column;align-items:center;gap:6px}
+.avatar{
+  position:relative;width:102px;height:102px;border-radius:50%;overflow:hidden;border:5px solid #fff4fd;box-shadow:0 12px 26px rgba(145,108,194,.22);
+  background:linear-gradient(180deg,rgba(255,255,255,.22),rgba(255,255,255,.05)),url("avatar-kim.png") 47% 18%/208% auto no-repeat
+}
+.avatar:before{content:"";position:absolute;inset:-8px;border-radius:50%;border:2px solid rgba(255,162,206,.58);animation:ringPulse 2.7s ease-in-out infinite}
+.avatar.pop{animation:avatarHop .42s ease}
+.aBadge{
+  position:absolute;right:-2px;top:4px;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-size:18px;
+  background:linear-gradient(135deg,#fff8d5,#ffd1ec);box-shadow:0 8px 18px rgba(145,108,194,.18)
+}
+.aLabel{font-size:12px;font-weight:900;color:#776f96}
+.modal{position:fixed;inset:0;display:none;align-items:flex-end;justify-content:center;padding:14px;background:rgba(31,20,58,.32);z-index:30}
 .modal.show{display:flex}
-.sheet{width:min(100%,620px); background:rgba(255,255,255,.96); border-radius:30px; padding:20px; box-shadow:var(--shadow); backdrop-filter:blur(12px)}
-.timerAdjust{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:14px}
-.box{background:#faf8ff; border-radius:22px; padding:14px; text-align:center}
-.bigNum{font-size:38px; font-weight:900; margin:8px 0}
-.pm{display:flex; justify-content:center; gap:8px}
-.pm button{width:54px;height:54px;padding:0;border-radius:16px;font-size:28px}
-.circle{width:210px;height:210px;border-radius:50%; background:conic-gradient(var(--pink) 0deg,#eee7f4 0deg); display:grid; place-items:center; margin:8px auto 12px}
-.inner{width:160px;height:160px;border-radius:50%; background:white; display:grid; place-items:center}
-.timeText{font-size:42px; font-weight:900}
-.rewardGrid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:12px}
-.rewardBox{background:#fbf9ff; border-radius:18px; padding:12px; text-align:center; font-weight:900}
-.chest{font-size:94px; text-align:center; cursor:pointer}
-.tiny{font-size:13px; opacity:.72}
-@media (max-width: 720px){
-  .hero{min-height:760px}
-  .bubble{width:min(88%,430px)}
-  .actionRow{grid-template-columns:1fr; margin-top:16px}
-  .missionGrid{grid-template-columns:repeat(2,1fr)}
+.sheet{
+  width:min(100%,430px);border-radius:30px;padding:18px;border:1px solid rgba(255,255,255,.74);background:rgba(255,250,244,.96);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)
+}
+.sheetHead{display:flex;align-items:center;gap:12px}
+.sheetIcon{width:58px;height:58px;border-radius:20px;background:rgba(255,255,255,.82);display:grid;place-items:center;font-size:28px}
+.sheetHead h2{margin:0;font-size:25px;line-height:.96}
+.sheetHead p{margin:5px 0 0;color:#675e84}
+.timerAdjust{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.box{padding:14px;border-radius:24px;text-align:center;background:rgba(255,255,255,.78)}
+.bigNum{margin:8px 0;font-size:40px;font-weight:900}
+.pm{display:flex;justify-content:center;gap:8px}
+.pm button{width:52px;height:52px;border-radius:18px;background:rgba(238,229,255,.9);color:var(--ink);font-size:28px;font-weight:900}
+.modalActions{justify-content:center;margin-top:16px}
+.circle{width:224px;height:224px;margin:0 auto 14px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--berry) 0deg,rgba(218,209,240,.34) 0deg);box-shadow:var(--soft)}
+.inner{width:174px;height:174px;border-radius:50%;background:rgba(255,255,255,.94);display:grid;place-items:center}
+.timeText{font-size:42px;font-weight:900}
+.tag{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:7px 14px;border-radius:999px;background:rgba(241,232,255,.9);font-weight:900}
+.rewardEmoji{text-align:center;font-size:72px}
+.chest{margin-top:12px;text-align:center;font-size:94px;cursor:pointer;animation:chestBounce 1.3s ease-in-out infinite}
+.spark{position:fixed;z-index:40;pointer-events:none;font-size:22px;animation:fall 1.5s linear forwards}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes sunPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+@keyframes ringPulse{0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.06);opacity:.4}}
+@keyframes avatarHop{0%{transform:translateY(0) scale(1)}45%{transform:translateY(-6px) scale(1.03)}100%{transform:translateY(0) scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}30%{transform:translateX(-4px)}60%{transform:translateX(4px)}}
+@keyframes chestBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes fall{0%{transform:translate3d(var(--dx,0),-10vh,0) rotate(0deg);opacity:1}100%{transform:translate3d(calc(var(--dx,0)*1.6),110vh,0) rotate(220deg);opacity:0}}
+@media (max-width:390px){
+  .actionRow,.timerAdjust,.rewardGrid,.playGrid{grid-template-columns:1fr}
+  .bubble{width:min(86%,292px)}
+  .section h2,.card h2{font-size:26px}
 }
 </style>
 </head>
 <body>
-<div class="topbar">
-  <div class="pill">🎮 Morning Quest</div>
-  <div class="stats">
-    <div class="pill" id="diamondChip">💎 0</div>
-    <div class="pill" id="starChip">⭐ 0</div>
-    <div class="pill" id="musicChip">🎵 0</div>
-    <div class="pill" id="streakChip">🔥 0</div>
+<main class="app">
+  <div class="topbar">
+    <div class="pill glass">
+      <div class="pillIcon">🎮</div>
+      <div>Morning<br>Quest</div>
+    </div>
+    <div class="stats">
+      <div class="chip glass" id="diamondChip">💎 0</div>
+      <div class="chip glass" id="starChip">⭐ 0</div>
+      <div class="chip glass" id="musicChip">🎵 0</div>
+      <div class="chip glass" id="streakChip">🔥 0</div>
+    </div>
   </div>
-</div>
 
-<div id="homeView" class="view active">
-  <section class="hero">
-    <div class="overlay">
-      <div class="bubble">
-        <h1 id="heroGreeting">Good morning,<br>Kim!</h1>
-        <p id="heroMessage"><span class="expressive">✨</span> You’ve got big energy today! Let’s have an amazing day!</p>
-      </div>
-
-      <div class="actionRow">
-        <button class="primary" id="startBtn">👑 Start Adventure</button>
-        <button class="secondary" id="modeBtn">🌙 Bedtime Mode</button>
-        <button class="soft" id="soundBtn">🔊 Sound: On</button>
-      </div>
-
-      <div class="questPanel">
-        <div class="questHeader">
-          <h2>📋 Today's Quest</h2>
-          <div id="progressLabel" style="font-weight:900">0 / 5</div>
+  <div id="homeView" class="view active">
+    <section class="hero">
+      <div class="heroInner">
+        <div class="heroTop"><div class="sun glass" id="sunBadge">☀️</div></div>
+        <div class="bubble">
+          <div class="eyebrow" id="bubbleEyebrow">Morning routine</div>
+          <h1 id="heroGreeting">Good morning,<br><span class="name">Kim</span>!</h1>
+          <p id="heroMessage"><span class="sparkle">✨</span> Pick any task and let's make today sparkle.</p>
         </div>
-        <div class="progressOuter"><div class="progressFill" id="progressFill"></div></div>
+        <div class="actionRow">
+          <button class="action primary" id="startBtn" type="button">
+            <span class="actionIcon">👑</span>
+            <span><strong id="startBtnLabel">Start Adventure</strong><small id="startBtnHint">Pick any task and go</small></span>
+          </button>
+          <button class="action soft" id="modeBtn" type="button">
+            <span class="actionIcon">🌙</span>
+            <span><strong id="modeBtnLabel">Bedtime Mode</strong><small>Switch routine</small></span>
+          </button>
+          <button class="action warm" id="soundBtn" type="button">
+            <span class="actionIcon" id="soundBtnIcon">🔊</span>
+            <span><strong id="soundBtnLabel">Playful Sound</strong><small id="soundBtnHint">On with cheers</small></span>
+          </button>
+        </div>
+      </div>
+    </section>
 
-        <div class="missionGrid" id="missionGrid"></div>
+    <section class="section questPanel glass">
+      <div class="head">
+        <div>
+          <div class="eyebrow" id="sectionEyebrow">Free order routine</div>
+          <h2>Today's Quest</h2>
+        </div>
+        <div class="progressMeta">
+          <div class="miniPill glass" id="progressLabel">0 / 8</div>
+          <div class="miniPill muted" id="orderChip">Any order</div>
+        </div>
+      </div>
+      <div class="bar"><div class="fill" id="progressFill"></div></div>
+      <div class="missionRow" id="missionGrid"></div>
+
+      <div class="play" id="playPanel" hidden>
+        <div class="playHead">
+          <div>
+            <div class="eyebrow" id="playEyebrow">Ready to play</div>
+            <h3 id="playTitle">Brush teeth</h3>
+          </div>
+          <div class="miniPill glass" id="playProgress">0 / 6</div>
+        </div>
+        <p class="playHint" id="playHint">Tap the sparkles to help Kim finish this mission.</p>
+        <div class="playMeta" style="margin-top:14px">
+          <div class="miniPill muted" id="playStatus">Unlocked</div>
+          <button class="ghost" id="closePlayBtn" type="button">Back to routine</button>
+        </div>
+        <div class="playGrid" id="miniGameGrid"></div>
+      </div>
+    </section>
+  </div>
+
+  <div id="mapView" class="view">
+    <div class="card glass">
+      <div class="eyebrow">Routine board</div>
+      <h2>Task Map</h2>
+      <p>Kim can pick any unfinished task. No strict order.</p>
+      <div class="missionBoard" id="mapList"></div>
+    </div>
+  </div>
+
+  <div id="prizesView" class="view">
+    <div class="card glass">
+      <div class="eyebrow">Rewards</div>
+      <h2>Prize Shelf</h2>
+      <div class="rewardGrid">
+        <div class="rewardBox" id="prizeDiamonds">💎 0</div>
+        <div class="rewardBox" id="prizeStars">⭐ 0</div>
+        <div class="rewardBox" id="prizeMusic">🎵 0</div>
       </div>
     </div>
-  </section>
-</div>
-
-<div id="mapView" class="view">
-  <div class="card">
-    <h2 style="margin:0 0 12px">🗺️ Mission Map</h2>
-    <div id="mapList" class="missionGrid"></div>
-  </div>
-</div>
-
-<div id="prizesView" class="view">
-  <div class="card">
-    <h2 style="margin:0 0 12px">🎁 Prizes</h2>
-    <div class="rewardGrid">
-      <div class="rewardBox" id="prizeDiamonds">💎 0</div>
-      <div class="rewardBox" id="prizeStars">⭐ 0</div>
-      <div class="rewardBox" id="prizeMusic">🎵 0</div>
+    <div class="card glass">
+      <div class="eyebrow">Collected stickers</div>
+      <h2>Sticker Shelf</h2>
+      <div class="shelf" id="stickerShelf">No stickers yet.</div>
     </div>
   </div>
-  <div class="card">
-    <h2 style="margin:0 0 10px">Sticker Shelf</h2>
-    <div class="shelf" id="stickerShelf">No stickers yet.</div>
-  </div>
-</div>
 
-<div id="settingsView" class="view">
-  <div class="card">
-    <h2 style="margin:0 0 12px">⚙️ Settings</h2>
-    <div style="display:grid; gap:10px">
-      <input id="nameInput" maxlength="20" placeholder="Child name">
-      <div class="row">
-        <button class="secondary" id="saveNameBtn">Save name</button>
-        <button class="secondary" id="resetDayBtn">Reset today</button>
-        <button class="secondary" id="fullResetBtn">Full reset</button>
+  <div id="settingsView" class="view">
+    <div class="card glass">
+      <div class="eyebrow">Profile</div>
+      <h2>Settings</h2>
+      <div style="display:grid;gap:10px;margin-top:12px">
+        <input id="nameInput" maxlength="20" placeholder="Child name" value="Kim">
+        <div class="row">
+          <button class="btn" id="saveNameBtn" type="button">Save name</button>
+          <button class="ghost" id="resetDayBtn" type="button">Reset today</button>
+          <button class="ghost" id="fullResetBtn" type="button">Full reset</button>
+        </div>
+        <div class="tiny">Safe-area padding, dynamic viewport height, and touch-friendly controls are tuned for iPhone Safari.</div>
       </div>
-      <div class="tiny">Full reset clears progress, prizes, and streak.</div>
     </div>
   </div>
-</div>
 
-<div class="bottomNav">
-  <div class="navWrap">
-    <button class="navBtn active" data-view="homeView">🏠<br>Home</button>
-    <button class="navBtn" data-view="mapView">🗺️<br>Map</button>
-    <div style="text-align:center"><div class="navAvatar"></div></div>
-    <button class="navBtn" data-view="prizesView">🎁<br>Prizes</button>
-    <button class="navBtn" data-view="settingsView">⚙️<br>Settings</button>
+  <div class="bottomNav">
+    <div class="navWrap glass">
+      <button class="navBtn active" data-view="homeView" type="button"><span class="emo">🏠</span><span>Home</span></button>
+      <button class="navBtn" data-view="mapView" type="button"><span class="emo">🧭</span><span>Routine</span></button>
+      <button class="avatarDock" id="avatarTapBtn" type="button" aria-label="Cheer with Kim">
+        <div class="avatar" id="avatarButton"><div class="aBadge" id="avatarBadge">✨</div></div>
+        <div class="aLabel" id="avatarLabel">Tap Kim</div>
+      </button>
+      <button class="navBtn" data-view="prizesView" type="button"><span class="emo">🎁</span><span>Prizes</span></button>
+      <button class="navBtn" data-view="settingsView" type="button"><span class="emo">⚙️</span><span>Settings</span></button>
+    </div>
   </div>
-</div>
+</main>
 
-<div class="modal" id="timerModal"><div class="sheet">
-  <div style="font-size:68px; text-align:center">⏱️</div>
-  <h2 id="timerTitle" style="text-align:center; margin:0">Set Timer</h2>
-  <p id="timerText" style="text-align:center; opacity:.8">Choose the time, then tap approve.</p>
+<div class="modal" id="timerModal"><div class="sheet glass">
+  <div class="sheetHead">
+    <div class="sheetIcon" id="timerMissionIcon">⏱️</div>
+    <div>
+      <h2 id="timerTitle">Set a timer</h2>
+      <p id="timerText">Pick the time, then start the mission.</p>
+    </div>
+  </div>
   <div class="timerAdjust">
     <div class="box">
-      <div class="tiny">Minutes</div>
+      <div class="eyebrow">Minutes</div>
       <div class="bigNum" id="minutesValue">2</div>
-      <div class="pm"><button class="secondary" id="minMinus">−</button><button class="secondary" id="minPlus">+</button></div>
+      <div class="pm"><button id="minMinus" type="button">−</button><button id="minPlus" type="button">+</button></div>
     </div>
     <div class="box">
-      <div class="tiny">Seconds</div>
+      <div class="eyebrow">Seconds</div>
       <div class="bigNum" id="secondsValue">0</div>
-      <div class="pm"><button class="secondary" id="secMinus">−</button><button class="secondary" id="secPlus">+</button></div>
+      <div class="pm"><button id="secMinus" type="button">−</button><button id="secPlus" type="button">+</button></div>
     </div>
   </div>
-  <div class="row" style="justify-content:center; margin-top:14px">
-    <button class="secondary" id="cancelTimerBtn">Cancel</button>
-    <button class="primary" id="approveTimerBtn">Approve & Start</button>
+  <div class="modalActions">
+    <button class="ghost" id="cancelTimerBtn" type="button">Cancel</button>
+    <button class="btn" id="approveTimerBtn" type="button">Approve & Start</button>
   </div>
 </div></div>
 
-<div class="modal" id="countdownModal"><div class="sheet" style="text-align:center">
+<div class="modal" id="countdownModal"><div class="sheet glass" style="text-align:center">
   <div class="circle" id="timerCircle"><div class="inner"><div class="timeText" id="countdownText">02:00</div></div></div>
-  <h2 id="countdownTitle" style="margin:0">Timer running</h2>
-  <div style="margin-top:8px; background:#f4efff; padding:8px 12px; border-radius:999px; display:inline-block" id="countdownMissionName">Wake up</div>
-  <div class="row" style="justify-content:center; margin-top:14px">
-    <button class="secondary" id="pauseTimerBtn">Pause</button>
-    <button class="secondary" id="cancelRunTimerBtn">Cancel</button>
+  <div class="eyebrow" id="countdownEyebrow">Kim is doing great</div>
+  <h2 id="countdownTitle" style="margin:6px 0 10px">Timer running</h2>
+  <div class="tag" id="countdownMissionName">Wake up</div>
+  <div class="modalActions">
+    <button class="ghost" id="pauseTimerBtn" type="button">Pause</button>
+    <button class="ghost" id="cancelRunTimerBtn" type="button">Cancel</button>
   </div>
 </div></div>
 
-<div class="modal" id="rewardModal"><div class="sheet">
-  <div style="font-size:72px; text-align:center" id="rewardEmoji">🎁</div>
-  <h2 id="rewardTitle" style="text-align:center; margin:0">Open your prize chest!</h2>
-  <p id="rewardText" style="text-align:center; opacity:.8">Tap the chest to open your reward.</p>
+<div class="modal" id="rewardModal"><div class="sheet glass">
+  <div class="rewardEmoji" id="rewardEmoji">🎁</div>
+  <h2 id="rewardTitle" style="text-align:center;margin:0">Prize time!</h2>
+  <p id="rewardText" style="text-align:center;color:#675e84">Tap the chest to hear Kim's celebration.</p>
   <div class="chest" id="chestBtn">🎁</div>
   <div class="rewardGrid" id="rewardGrid" style="display:none">
     <div class="rewardBox" id="rewardDiamond">💎 +1</div>
     <div class="rewardBox" id="rewardSticker">⭐ +1</div>
     <div class="rewardBox" id="rewardMusic">🎵 +0</div>
   </div>
-  <div class="row" id="nextMissionRow" style="justify-content:center; margin-top:14px; display:none">
-    <button class="primary" id="nextMissionBtn">Next mission</button>
+  <div class="modalActions" id="nextMissionRow" style="display:none">
+    <button class="btn" id="nextMissionBtn" type="button">Pick another task</button>
   </div>
 </div></div>
 
 <script>
-const STORAGE_KEY="kim_expressive_final_v1";
-const MORNING=[
-  {id:"wake", title:"Wake up", icon:"🌞", defaultMin:1, defaultSec:0, kind:"tap", target:6, items:["☀️","✨","🌈"], sticker:"🌈"},
-  {id:"toilet", title:"Toilet", icon:"🚽", defaultMin:3, defaultSec:0, kind:"tap", target:5, items:["🧻","🧼","🚽","🫧"], sticker:"🫧"},
-  {id:"dress", title:"Get dressed", icon:"👗", defaultMin:4, defaultSec:0, kind:"choose", target:3, options:[["👕",1],["🩳",1],["🧦",1],["🧸",0],["🍭",0]], sticker:"👗"},
-  {id:"bed", title:"Make bed", icon:"🛏️", defaultMin:2, defaultSec:0, kind:"tap", target:4, items:["🛏️","🛌","✨","🧸"], sticker:"🪄"},
-  {id:"breakfast", title:"Breakfast", icon:"🥣", defaultMin:10, defaultSec:0, kind:"choose", target:3, options:[["🥣",1],["🍞",1],["🍎",1],["🍬",0],["🍟",0]], sticker:"🍓"}
-];
-const BEDTIME=[
-  {id:"pajamas", title:"Pajamas", icon:"🛌", defaultMin:4, defaultSec:0, kind:"choose", target:3, options:[["👚",1],["🩳",1],["🧦",1],["🎈",0],["🍪",0]], sticker:"🌙"},
-  {id:"toilet", title:"Toilet", icon:"🚽", defaultMin:3, defaultSec:0, kind:"tap", target:5, items:["🚽","🧻","🫧","🧼"], sticker:"🫧"},
-  {id:"teeth", title:"Brush teeth", icon:"🪥", defaultMin:2, defaultSec:0, kind:"tap", target:8, items:["🦠","✨","🫧"], sticker:"🪥"},
-  {id:"story", title:"Story", icon:"📚", defaultMin:8, defaultSec:0, kind:"choose", target:3, options:[["📚",1],["🛏️",1],["🧸",1],["📺",0],["🍭",0]], sticker:"📚"},
-  {id:"lights", title:"Lights out", icon:"🌙", defaultMin:1, defaultSec:0, kind:"tap", target:6, items:["🌙","⭐","✨"], sticker:"⭐"}
-];
-const EXPRESSIONS={
-  idle:{greet:(n,m)=>m==="morning"?`Good morning,<br>${n}!`:`Good evening,<br>${n}!`, msg:(m)=>m==="morning"?"✨ You’ve got big energy today! Let’s have an amazing day!":"🌙 Cozy time is here. Let’s get ready for a dreamy night!"},
-  ready:{greet:(n)=>`You can do it,<br>${n}!`, msg:()=> "💖 Tap a mission to set the timer and begin!"},
-  running:{greet:(n)=>`Go, go,<br>${n}!`, msg:()=> "⏱️ Timer is running. You’ve got this!"},
-  unlocked:{greet:(n)=>`Amazing,<br>${n}!`, msg:()=> "🎉 Timer finished! Your mission is now ready to play!"},
-  win:{greet:(n)=>`Woohoo,<br>${n}!`, msg:()=> "🌟 That was awesome! Open your prize chest!"},
-  complete:{greet:(n)=>`Champion,<br>${n}!`, msg:()=> "👑 All done! You finished today’s adventure!"}
-};
-let state={
-  name:"Kim", mode:"morning", soundOn:true,
-  current:0, started:false, completed:false,
-  diamonds:0, stars:0, music:0, streak:0, lastDate:"",
-  stickers:[],
-  timerSetupMission:null, timerMin:2, timerSec:0,
-  runningMission:null, timerRemaining:0, timerTotal:0, timerPaused:false, missionUnlocked:null,
-  missionProgress:0, reward:null, chestOpened:false, view:"homeView", expression:"idle"
-};
-let timerInt=null;
+const STORAGE_KEY="kim_quest_pro_v2";
 const $=id=>document.getElementById(id);
-const tasks=()=>state.mode==="morning"?MORNING:BEDTIME;
-
-function save(){localStorage.setItem(STORAGE_KEY, JSON.stringify(state))}
-function load(){try{const raw=localStorage.getItem(STORAGE_KEY); if(raw) state={...state,...JSON.parse(raw)};}catch(e){}}
-function fmt(sec){const m=Math.floor(sec/60), s=sec%60; return String(m).padStart(2,"0")+":"+String(s).padStart(2,"0")}
-function todayStr(){const d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
-function beep(freq=520,dur=0.05){
-  if(!state.soundOn) return;
-  try{
-    const ctx=new(window.AudioContext||window.webkitAudioContext)(), osc=ctx.createOscillator(), gain=ctx.createGain();
-    osc.type="sine"; osc.frequency.value=freq;
-    gain.gain.setValueAtTime(0.001, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.018, ctx.currentTime+0.02);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+dur);
-    osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime+dur); osc.onended=()=>ctx.close();
-  }catch(e){}
-}
-function speak(text){
-  if(!state.soundOn || !("speechSynthesis" in window)) return;
-  try{
-    speechSynthesis.cancel();
-    const u=new SpeechSynthesisUtterance(text);
-    u.rate=0.92; u.pitch=1.18; u.volume=0.72;
-    speechSynthesis.speak(u);
-  }catch(e){}
-}
-function confetti(symbols=["✨","🎉","⭐"]){
-  const root=document.body;
-  for(let i=0;i<16;i++){
-    const d=document.createElement("div");
-    d.className="spark";
-    d.textContent=symbols[Math.floor(Math.random()*symbols.length)];
-    d.style.left=(Math.random()*100)+"vw"; d.style.top=(-5-Math.random()*20)+"px";
-    root.appendChild(d); setTimeout(()=>d.remove(),1400);
-  }
-}
-function setExpression(key){
-  state.expression=key;
-  const ex=EXPRESSIONS[key] || EXPRESSIONS.idle;
-  $("heroGreeting").innerHTML=ex.greet(state.name, state.mode);
-  $("heroMessage").innerHTML=ex.msg(state.mode);
-}
-function renderTop(){
-  $("diamondChip").textContent="💎 "+state.diamonds;
-  $("starChip").textContent="⭐ "+state.stars;
-  $("musicChip").textContent="🎵 "+state.music;
-  $("streakChip").textContent="🔥 "+state.streak;
-  $("nameInput").value=state.name;
-  $("modeBtn").textContent= state.mode==="morning" ? "🌙 Bedtime Mode" : "🌞 Morning Mode";
-  $("soundBtn").textContent= state.soundOn ? "🔊 Sound: On" : "🔈 Sound: Off";
-}
-function setView(view){
-  state.view=view; save();
-  document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
-  $(view).classList.add("active");
-  document.querySelectorAll(".navBtn").forEach(b=>b.classList.toggle("active", b.dataset.view===view));
-}
-function progressCount(){ return state.completed ? tasks().length : state.current; }
-function renderProgress(){
-  const total=tasks().length, done=state.completed?total:state.current;
-  $("progressLabel").textContent=done+" / "+total;
-  $("progressFill").style.width=Math.round((done/total)*100)+"%";
-}
-function renderMissions(targetId){
-  const holder=$(targetId); holder.innerHTML="";
-  tasks().forEach((t,i)=>{
-    const done = state.completed || i < state.current;
-    const current = !state.completed && i===state.current;
-    const unlocked = state.missionUnlocked===i;
-    const div=document.createElement("div");
-    div.className="mission "+(done?"done ":"")+(current?"current ":"")+(current||done?"":"locked ");
-    div.innerHTML = done
-      ? `<div class="icon">${t.icon}</div><div class="title">${t.title}</div><div class="badgeOk">✅</div>`
-      : current
-        ? `<div class="icon">${t.icon}</div><div class="title">${t.title}</div><div class="timerTag">${t.defaultMin}:${String(t.defaultSec).padStart(2,"0")}</div><button class="primary startBtn">${unlocked?"Play Mission":"Start Timer"}</button>`
-        : `<div class="icon">${t.icon}</div><div class="title">${t.title}</div><div class="timerTag">${t.defaultMin}:${String(t.defaultSec).padStart(2,"0")}</div>`;
-    if(current){
-      div.querySelector(".startBtn").onclick=()=> unlocked ? renderMiniGame() : openTimer(i);
-    }
-    holder.appendChild(div);
-  });
-}
-function renderMiniGame(){
-  const t=tasks()[state.current];
-  const area=$("missionGrid");
-  area.innerHTML="";
-  if(t.kind==="tap"){
-    for(let i=0;i<Math.max(t.target+1,6);i++){
-      const d=document.createElement("div");
-      d.className="mission current";
-      d.innerHTML=`<div class="icon">${t.items[Math.floor(Math.random()*t.items.length)]}</div><div class="title">Tap me</div>`;
-      d.onclick=()=>{
-        if(d.dataset.hit) return;
-        d.dataset.hit=1; d.style.opacity=.45; state.missionProgress++; beep(490,.04);
-        if(state.missionProgress>=t.target) finishMission();
-      };
-      area.appendChild(d);
-    }
-  } else {
-    [...t.options].sort(()=>Math.random()-0.5).forEach(([emoji,good])=>{
-      const d=document.createElement("div");
-      d.className="mission current";
-      d.innerHTML=`<div class="icon">${emoji}</div><div class="title">${good?"Choose":"Oops"}</div>`;
-      d.onclick=()=>{
-        if(d.dataset.hit) return;
-        if(good){ d.dataset.hit=1; d.style.opacity=.45; state.missionProgress++; beep(500,.04); if(state.missionProgress>=t.target) finishMission();}
-        else { beep(360,.04); }
-      };
-      area.appendChild(d);
-    });
-  }
-  setExpression("unlocked"); save();
-}
-function finishMission(){
-  const t=tasks()[state.current];
-  state.reward={diamond:1, star:1, music:(state.mode==="morning" && state.current===tasks().length-1)?1:0, sticker:t.sticker};
-  state.chestOpened=false;
-  setExpression("win");
-  $("rewardEmoji").textContent="🎁";
-  $("rewardTitle").textContent="Open your prize chest!";
-  $("rewardText").textContent="Kim, you did it!";
-  $("rewardModal").classList.add("show");
-  save();
-}
-function openChest(){
-  if(state.chestOpened || !state.reward) return;
-  state.chestOpened=true;
-  state.diamonds += state.reward.diamond;
-  state.stars += state.reward.star;
-  state.music += state.reward.music;
-  if(state.reward.sticker) state.stickers.push(state.reward.sticker);
-  $("rewardGrid").style.display="grid";
-  $("nextMissionRow").style.display="flex";
-  $("rewardDiamond").textContent="💎 +"+state.reward.diamond;
-  $("rewardSticker").textContent="⭐ +"+state.reward.star;
-  $("rewardMusic").textContent="🎵 +"+state.reward.music;
-  confetti(["💎","⭐","🎉"]); beep(500,.05); setTimeout(()=>beep(580,.05),90); speak("Great job Kim!");
-  renderPrizes(); renderTop(); save();
-}
-function nextMission(){
-  $("rewardModal").classList.remove("show");
-  $("rewardGrid").style.display="none";
-  $("nextMissionRow").style.display="none";
-  state.reward=null; state.chestOpened=false; state.missionUnlocked=null; state.missionProgress=0;
-  if(state.current < tasks().length-1){ state.current += 1; state.expression="ready"; }
-  else {
-    state.completed=true; setExpression("complete");
-    const today=todayStr();
-    if(state.lastDate!==today){
-      if(!state.lastDate) state.streak=1;
-      else {
-        const prev=new Date(state.lastDate+"T00:00:00"), curr=new Date(today+"T00:00:00");
-        const diff=Math.round((curr-prev)/86400000);
-        state.streak = diff===1 ? state.streak+1 : 1;
-      }
-      state.lastDate=today;
-    }
-  }
-  renderAll(); save();
-}
-function openTimer(i){
-  const t=tasks()[i];
-  state.timerSetupMission=i; state.timerMin=t.defaultMin; state.timerSec=t.defaultSec;
-  $("minutesValue").textContent=state.timerMin; $("secondsValue").textContent=state.timerSec;
-  $("timerTitle").textContent="Set timer for "+t.title;
-  $("timerText").textContent="Choose the time, then tap approve.";
-  $("timerModal").classList.add("show");
-}
-function startTimer(){
-  const total=state.timerMin*60 + state.timerSec;
-  if(total<=0){ alert("Please set at least 1 second."); return; }
-  $("timerModal").classList.remove("show");
-  state.runningMission=state.timerSetupMission;
-  state.timerRemaining=total; state.timerTotal=total; state.timerPaused=false;
-  setExpression("running");
-  renderCountdown();
-  $("countdownModal").classList.add("show");
-  beep(500,.05); speak("Timer started"); save();
-  clearInterval(timerInt);
-  timerInt=setInterval(()=>{
-    if(state.timerPaused) return;
-    state.timerRemaining = Math.max(0, state.timerRemaining - .25);
-    renderCountdown();
-    if(state.timerRemaining<=0){
-      clearInterval(timerInt); timerInt=null;
-      $("countdownModal").classList.remove("show");
-      state.missionUnlocked = state.runningMission;
-      state.runningMission = null;
-      setExpression("unlocked");
-      confetti(["⏱️","✨","🎉"]); beep(520,.05); setTimeout(()=>beep(620,.05),120);
-      speak("Timer done! Your mission is ready!");
-      renderAll(); save();
-    }
-  },250);
-}
-function renderCountdown(){
-  const remain=Math.ceil(state.timerRemaining), total=Math.max(1,state.timerTotal);
-  $("countdownText").textContent=fmt(remain);
-  $("countdownMissionName").textContent=tasks()[state.runningMission]?.title || "Mission";
-  $("countdownTitle").textContent=state.timerPaused?"Paused":"Timer running";
-  $("pauseTimerBtn").textContent=state.timerPaused?"Resume":"Pause";
-  const deg=Math.round(((total-remain)/total)*360);
-  $("timerCircle").style.background=`conic-gradient(var(--pink) ${deg}deg,#eee7f4 ${deg}deg)`;
-}
-function renderPrizes(){
-  $("prizeDiamonds").textContent="💎 "+state.diamonds;
-  $("prizeStars").textContent="⭐ "+state.stars;
-  $("prizeMusic").textContent="🎵 "+state.music;
-  $("stickerShelf").innerHTML = state.stickers.length ? state.stickers.map(s=>`<span>${s}</span>`).join("") : "No stickers yet.";
-}
-function renderAll(){
-  renderTop(); renderProgress(); renderMissions("missionGrid"); renderMissions("mapList"); renderPrizes();
-  if(state.completed) setExpression("complete");
-  else if(state.missionUnlocked===state.current) setExpression("unlocked");
-  else if(state.started) setExpression("ready");
-  else setExpression("idle");
-}
-function startAdventure(){
-  state.started=true; state.completed=false; state.current=0; state.missionUnlocked=null; state.missionProgress=0;
-  setExpression("ready"); renderAll(); setView("homeView"); save();
-}
-function resetToday(){
-  state.started=false; state.completed=false; state.current=0; state.missionUnlocked=null; state.missionProgress=0; state.reward=null;
-  clearInterval(timerInt); timerInt=null; $("countdownModal").classList.remove("show"); $("timerModal").classList.remove("show"); $("rewardModal").classList.remove("show");
-  renderAll(); save();
-}
-function fullReset(){
-  localStorage.removeItem(STORAGE_KEY);
-  location.reload();
-}
+const moodMeta={idle:["✨","Tap Kim"],ready:["💖","Ready"],run:["⏱️","Focused"],play:["🎉","Play now"],win:["🥳","Celebrate"],done:["🏆","Champion"]};
+const makeSession=()=>({started:false,done:[],setup:null,run:null,ready:null,play:null,progress:0,reward:null,chest:false,remain:0,total:0,paused:false});
+const base=()=>({name:"Kim",mode:"morning",soundOn:true,diamonds:0,stars:0,music:0,streak:0,lastDate:"",stickers:[],view:"homeView",sessions:{morning:makeSession(),bedtime:makeSession()}});
+const DATA={morning:[
+  {id:"wake",title:"Wake up",icon:"🌞",min:1,sec:0,kind:"tap",target:6,items:["☀️","✨","🌈","💛"],sticker:"🌈",accent:"#ffd36f",soft:"#fff2bf",strong:"#ffbc4a",blurb:"Start bright and early.",prompt:"Tap the sunshine sparkles to wake the morning up."},
+  {id:"toilet",title:"Toilet",icon:"🚽",min:3,sec:0,kind:"tap",target:5,items:["🧻","🧼","🫧","✨"],sticker:"🫧",accent:"#bfdcff",soft:"#e8f5ff",strong:"#84beff",blurb:"Quick bathroom stop.",prompt:"Tap the bubbles to finish the bathroom mission."},
+  {id:"teeth",title:"Brush teeth",icon:"🪥",min:2,sec:0,kind:"tap",target:7,items:["🪥","🫧","✨","🦷"],sticker:"🪥",accent:"#cdefff",soft:"#eefbff",strong:"#83d3ff",blurb:"Make that smile sparkle.",prompt:"Tap the shiny bubbles until Kim's smile is extra bright."},
+  {id:"hair",title:"Brush hair",icon:"🪮",min:2,sec:30,kind:"tap",target:6,items:["🪮","✨","💗","🎀"],sticker:"🎀",accent:"#ffd6ea",soft:"#fff0f8",strong:"#ff9fcd",blurb:"Smooth and tidy hair.",prompt:"Tap the sparkles to help Kim brush her hair nicely."},
+  {id:"dress",title:"Get dressed",icon:"👕",min:4,sec:0,kind:"choose",target:3,items:[["👕",1],["🩳",1],["🧦",1],["🧸",0],["🍭",0],["🎈",0]],sticker:"👗",accent:"#ddd4ff",soft:"#f2efff",strong:"#9d8eff",blurb:"Choose morning clothes.",prompt:"Tap the clothes Kim should wear this morning."},
+  {id:"shoes",title:"Put shoes",icon:"👟",min:1,sec:30,kind:"choose",target:2,items:[["👟",1],["🥿",1],["🧸",0],["🎀",0],["🧢",0],["🍪",0]],sticker:"👟",accent:"#ffe1b8",soft:"#fff4df",strong:"#ffb860",blurb:"Ready for outside steps.",prompt:"Pick the shoes Kim needs before the adventure starts."},
+  {id:"bed",title:"Make bed",icon:"🛏️",min:2,sec:0,kind:"tap",target:4,items:["🛏️","✨","🧸","🪄"],sticker:"🪄",accent:"#f2d7ff",soft:"#faf0ff",strong:"#d48cff",blurb:"Tidy room, calm start.",prompt:"Tap the cozy icons to help make the bed."},
+  {id:"breakfast",title:"Breakfast",icon:"🥣",min:10,sec:0,kind:"choose",target:3,items:[["🥣",1],["🍞",1],["🍎",1],["🍬",0],["🍟",0],["🍩",0]],sticker:"🍓",accent:"#ffe6bf",soft:"#fff5e3",strong:"#ffb559",blurb:"Fuel up for the day.",prompt:"Pick the breakfast foods that help Kim feel strong."}
+],bedtime:[
+  {id:"pajamas",title:"Pajamas",icon:"🛌",min:4,sec:0,kind:"choose",target:3,items:[["👚",1],["🩳",1],["🧦",1],["🎈",0],["🍪",0],["🪀",0]],sticker:"🌙",accent:"#ddd4ff",soft:"#f2efff",strong:"#9d8eff",blurb:"Get cozy for bed.",prompt:"Choose the bedtime clothes Kim needs tonight."},
+  {id:"bath",title:"Toilet",icon:"🚽",min:3,sec:0,kind:"tap",target:5,items:["🚽","🧻","🫧","✨"],sticker:"🫧",accent:"#bfdcff",soft:"#e8f5ff",strong:"#84beff",blurb:"One last bathroom stop.",prompt:"Tap the bubbles to finish the bathroom mission."},
+  {id:"bteeth",title:"Brush teeth",icon:"🪥",min:2,sec:0,kind:"tap",target:8,items:["🪥","🫧","✨","🦷"],sticker:"🪥",accent:"#cdefff",soft:"#eefbff",strong:"#83d3ff",blurb:"Shiny sleepy smile.",prompt:"Tap the bright bubbles to finish bedtime brushing."},
+  {id:"story",title:"Story time",icon:"📚",min:8,sec:0,kind:"choose",target:3,items:[["📚",1],["🧸",1],["🛏️",1],["📺",0],["🍭",0],["🎮",0]],sticker:"📚",accent:"#ffdce8",soft:"#fff1f6",strong:"#ff9abb",blurb:"Quiet story and cuddle.",prompt:"Choose the bedtime things Kim needs for story time."},
+  {id:"lights",title:"Lights out",icon:"🌙",min:1,sec:0,kind:"tap",target:6,items:["🌙","⭐","✨","💙"],sticker:"⭐",accent:"#d9d4ff",soft:"#f0efff",strong:"#9f8cff",blurb:"Soft ending to the day.",prompt:"Tap the sleepy stars and help the room calm down."}
+]};
+let state=base(),draft={min:2,sec:0},timerInt=null,audio=null,voice=null;
+const list=m=>DATA[m||state.mode],cur=()=>state.sessions[state.mode],sess=m=>state.sessions[m],task=(id,m)=>list(m).find(t=>t.id===id),doneCount=m=>sess(m||state.mode).done.length,leftCount=m=>list(m||state.mode).length-doneCount(m),fmt=s=>String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");
+function load(){try{const raw=JSON.parse(localStorage.getItem(STORAGE_KEY)||"null");if(raw)state={...base(),...raw,sessions:{morning:{...makeSession(),...((raw.sessions||{}).morning||{})},bedtime:{...makeSession(),...((raw.sessions||{}).bedtime||{})}}};}catch(e){}state.mode=state.mode==="bedtime"?"bedtime":"morning";state.view=["homeView","mapView","prizesView","settingsView"].includes(state.view)?state.view:"homeView";state.name=(state.name||"Kim").trim()||"Kim";state.soundOn=state.soundOn!==false;state.stickers=Array.isArray(state.stickers)?state.stickers:[];["morning","bedtime"].forEach(m=>{const ok=new Set(list(m).map(t=>t.id)),done=Array.isArray(sess(m).done)?sess(m).done:[];sess(m).done=[...done].filter(id=>ok.has(id));});}
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}
+function setVh(){document.documentElement.style.setProperty("--vh",window.innerHeight*.01+"px")}
+function initVoices(){if(!("speechSynthesis"in window))return;const v=speechSynthesis.getVoices();voice=v.find(x=>/Samantha|Ava|Karen|Victoria/i.test(x.name))||v.find(x=>/^en/i.test(x.lang))||v[0]||null}
+function ensureAudio(){if(!state.soundOn)return null;const A=window.AudioContext||window.webkitAudioContext;if(!A)return null;if(!audio)audio=new A();if(audio.state==="suspended")audio.resume().catch(()=>{});return audio}
+function note(f,o,d,t,v){const c=ensureAudio();if(!c)return;const s=c.createOscillator(),g=c.createGain();s.type=t||"triangle";s.frequency.setValueAtTime(f,c.currentTime+o);g.gain.setValueAtTime(.0001,c.currentTime+o);g.gain.exponentialRampToValueAtTime(v||.04,c.currentTime+o+.02);g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+o+d);s.connect(g);g.connect(c.destination);s.start(c.currentTime+o);s.stop(c.currentTime+o+d)}
+function cue(k){({tap:[[784,0,.08]],oops:[[392,0,.08,"square",.028],[330,.05,.08,"square",.022]],start:[[523,0,.08],[659,.09,.09],[784,.18,.12]],play:[[659,0,.09],[784,.08,.11],[1046,.18,.16]],win:[[659,0,.09],[784,.1,.1],[988,.2,.12],[1175,.32,.18]],done:[[523,0,.1],[659,.08,.1],[784,.16,.1],[1046,.26,.14],[1318,.38,.22]],toggle:[[740,0,.08]]}[k]||[]).forEach(n=>note(n[0],n[1],n[2],n[3],n[4]))}
+function speak(t){if(!state.soundOn||!("speechSynthesis"in window))return;try{initVoices();speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);if(voice){u.voice=voice;u.lang=voice.lang}else u.lang="en-US";u.rate=1.02;u.pitch=1.18;u.volume=.95;speechSynthesis.speak(u)}catch(e){}}
+function rain(arr){const a=arr||["✨","🎉","⭐"];for(let i=0;i<20;i++){const d=document.createElement("div");d.className="spark";d.textContent=a[Math.floor(Math.random()*a.length)];d.style.left=Math.random()*100+"vw";d.style.setProperty("--dx",(Math.random()*18-9)+"vw");document.body.appendChild(d);setTimeout(()=>d.remove(),1700)}}
+function avatarPop(){const a=$("avatarButton");a.classList.remove("pop");void a.offsetWidth;a.classList.add("pop");setTimeout(()=>a.classList.remove("pop"),420)}
+function today(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function streak(){const t=today();if(state.lastDate===t)return;if(!state.lastDate)state.streak=1;else{const p=new Date(state.lastDate+"T00:00:00"),c=new Date(t+"T00:00:00"),n=Math.round((c-p)/86400000);state.streak=n===1?state.streak+1:1}state.lastDate=t}
+function mood(){const s=cur();return doneCount()===list().length?"done":s.reward?"win":s.ready?"play":s.run?"run":s.started?"ready":"idle"}
+function hero(){const m=state.mode,n=state.name,s=cur(),l=leftCount();if(doneCount()===list().length)return{e:m==="morning"?"Morning complete":"Bedtime complete",h:`Champion,<br><span class="name">${n}</span>!`,p:`<span class="sparkle">🏆</span> All tasks are finished. ${n} crushed today's routine.`};if(s.reward)return{e:"Celebrate",h:`Woohoo,<br><span class="name">${n}</span>!`,p:'<span class="sparkle">🥳</span> That task is done. Open the chest for a playful cheer.'};if(s.ready){const t=task(s.ready);return{e:"Ready to play",h:`Amazing,<br><span class="name">${n}</span>!`,p:`<span class="sparkle">🎉</span> ${t?t.title:"Mission"} is ready. Tap play and finish strong.`}}if(s.run){const t=task(s.run);return{e:m==="morning"?"Timer running":"Cozy routine",h:`Keep going,<br><span class="name">${n}</span>!`,p:`<span class="sparkle">⏱️</span> ${t?t.title:"This task"} is in progress. ${n} has this.`}}if(s.started)return{e:"Free order routine",h:`${m==="morning"?"Good morning":"Good evening"},<br><span class="name">${n}</span>!`,p:`<span class="sparkle">💖</span> Pick any task you want next. ${l} little wins are waiting.`};return{e:m==="morning"?"Morning routine":"Bedtime routine",h:`${m==="morning"?"Good morning":"Good evening"},<br><span class="name">${n}</span>!`,p:`<span class="sparkle">${m==="morning"?"✨":"🌙"}</span> ${m==="morning"?"Pick any task and let's make today sparkle.":"Pick a cozy task and wind the day down gently."}`}}
+function renderHero(){const t=hero(),m=mood(),s=cur();$("bubbleEyebrow").textContent=t.e;$("heroGreeting").innerHTML=t.h;$("heroMessage").innerHTML=t.p;$("avatarBadge").textContent=moodMeta[m][0];$("avatarLabel").textContent=moodMeta[m][1];$("sunBadge").textContent=state.mode==="morning"?"☀️":"🌙";$("sectionEyebrow").textContent=state.mode==="morning"?"Free order routine":"Cozy routine";$("orderChip").textContent="Any order";$("modeBtnLabel").textContent=state.mode==="morning"?"Bedtime Mode":"Morning Mode";$("soundBtnIcon").textContent=state.soundOn?"🔊":"🔈";$("soundBtnLabel").textContent=state.soundOn?"Playful Sound":"Sound Paused";$("soundBtnHint").textContent=state.soundOn?"On with cheers":"Tap to enable";$("nameInput").value=state.name;if(doneCount()===list().length){$("startBtnLabel").textContent="Start Fresh";$("startBtnHint").textContent="Reset and play again"}else if(s.started){$("startBtnLabel").textContent="Resume Routine";$("startBtnHint").textContent=leftCount()+" tasks left"}else{$("startBtnLabel").textContent="Start Adventure";$("startBtnHint").textContent="Pick any task and go"}}
+function status(id,m){const s=sess(m||state.mode);if(s.done.includes(id))return"done";if(s.run===id)return"running";if(s.ready===id)return"unlocked";if(s.reward&&s.reward.taskId===id)return"reward";if(s.run||s.ready||s.reward)return"waiting";return"ready"}
+function label(st){return st==="done"?["Completed","Completed"]:st==="running"?["Timer on","View timer"]:st==="unlocked"?["Play now","Play mission"]:st==="reward"?["Prize ready","Open reward"]:st==="waiting"?["Hold","Finish active task"]:["Ready",cur().started?"Start timer":"Start day"]}
+function renderCards(id,m){const box=$(id);box.innerHTML="";list(m).forEach(t=>{const st=status(t.id,m),p=label(st),a=document.createElement("article");a.className="mission "+st;a.style.cssText=`--accent:${t.accent};--accent-soft:${t.soft};--accent-strong:${t.strong}`;a.innerHTML=`<div class="mTop"><div class="mIcon">${t.icon}</div><div class="mState">${p[0]}</div></div><h3>${t.title}</h3><p>${t.blurb}</p><div class="mMeta"><div class="mTime">⏱ ${fmt(t.min*60+t.sec)}</div></div><button class="mBtn ${st==="done"||st==="waiting"?"secondary":""}" ${st==="done"||st==="waiting"?"disabled":""} type="button">${p[1]}</button>`;const b=a.querySelector(".mBtn");if(b&&!b.disabled)b.onclick=()=>act(t.id,m,st);box.appendChild(a)})}
+function renderProgress(){$("progressLabel").textContent=`${doneCount()} / ${list().length}`;$("progressFill").style.width=Math.round(doneCount()/list().length*100)+"%";$("diamondChip").textContent="💎 "+state.diamonds;$("starChip").textContent="⭐ "+state.stars;$("musicChip").textContent="🎵 "+state.music;$("streakChip").textContent="🔥 "+state.streak}
+function renderPlay(){const s=cur(),id=s.play||s.ready,p=$("playPanel"),g=$("miniGameGrid");if(!id){p.hidden=true;g.innerHTML="";return}const t=task(id);p.hidden=false;$("playEyebrow").textContent="Ready to play";$("playTitle").textContent=t.title;$("playHint").textContent=t.prompt;$("playProgress").textContent=`${Math.min(s.progress,t.target)} / ${t.target}`;$("playStatus").textContent="Unlocked";g.innerHTML="";if(t.kind==="tap"){for(let i=0;i<Math.max(t.target+2,8);i++){const b=document.createElement("button");b.type="button";b.className="playCard";b.innerHTML=`<div class="pIcon">${t.items[Math.floor(Math.random()*t.items.length)]}</div><div class="pLabel">Tap sparkle</div>`;b.onclick=()=>{if(b.dataset.hit)return;b.dataset.hit=1;b.classList.add("hit");s.progress+=1;$("playProgress").textContent=`${Math.min(s.progress,t.target)} / ${t.target}`;cue("tap");avatarPop();if(s.progress>=t.target)finish(id)};g.appendChild(b)}}else{[...t.items].sort(()=>Math.random()-.5).forEach(it=>{const b=document.createElement("button");b.type="button";b.className="playCard";b.innerHTML=`<div class="pIcon">${it[0]}</div><div class="pLabel">${it[1]?"Pick me":"Not this one"}</div>`;b.onclick=()=>{if(b.dataset.hit)return;if(it[1]){b.dataset.hit=1;b.classList.add("hit");s.progress+=1;$("playProgress").textContent=`${Math.min(s.progress,t.target)} / ${t.target}`;cue("tap");avatarPop();if(s.progress>=t.target)finish(id)}else{b.classList.remove("miss");void b.offsetWidth;b.classList.add("miss");cue("oops")}};g.appendChild(b)})}}
+function renderPrizes(){$("prizeDiamonds").textContent="💎 "+state.diamonds;$("prizeStars").textContent="⭐ "+state.stars;$("prizeMusic").textContent="🎵 "+state.music;$("stickerShelf").innerHTML=state.stickers.length?state.stickers.map(s=>`<span>${s}</span>`).join(""):"No stickers yet."}
+function renderTimer(){const s=cur(),r=Math.max(0,Math.ceil(s.remain)),t=Math.max(1,Math.ceil(s.total)),n=task(s.run),d=Math.round((t-r)/t*360);$("countdownText").textContent=fmt(r);$("countdownTitle").textContent=s.paused?"Timer paused":"Timer running";$("countdownEyebrow").textContent=s.paused?"Take a tiny pause":"Kim is doing great";$("countdownMissionName").textContent=n?n.title:"Mission";$("pauseTimerBtn").textContent=s.paused?"Resume":"Pause";$("timerCircle").style.background=`conic-gradient(var(--berry) ${d}deg, rgba(218,209,240,.34) ${d}deg)`}
+function renderReward(){const r=cur().reward;if(!r)return;$("rewardDiamond").textContent="💎 +"+r.diamond;$("rewardSticker").textContent="⭐ +"+r.star;$("rewardMusic").textContent="🎵 +"+r.music;$("nextMissionBtn").textContent=doneCount()===list().length?"Back to routine":"Pick another task"}
+function setView(v){state.view=v;document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));$(v).classList.add("active");document.querySelectorAll(".navBtn").forEach(x=>x.classList.toggle("active",x.dataset.view===v));save()}
+function modal(id,on){$(id).classList.toggle("show",on);document.body.classList.toggle("modalOpen",!!document.querySelector(".modal.show"))}
+function render(){renderHero();renderProgress();renderCards("missionGrid",state.mode);renderCards("mapList",state.mode);renderPlay();renderPrizes();renderReward()}
+function start(){if(doneCount()===list().length)state.sessions[state.mode]=makeSession();cur().started=true;cue("start");setView("homeView");render();save()}
+function resetMode(){state.sessions[state.mode]=makeSession();clearInterval(timerInt);timerInt=null;modal("timerModal",false);modal("countdownModal",false);modal("rewardModal",false);render();save()}
+function fullReset(){localStorage.removeItem(STORAGE_KEY);location.reload()}
+function act(id,m,st){if(m!==state.mode)state.mode=m;const s=cur();if(st==="running"){renderTimer();modal("countdownModal",true);return}if(st==="reward"){modal("rewardModal",true);return}if(st==="unlocked"){s.play=id;s.progress=0;render();setView("homeView");return}if(st==="done"||st==="waiting")return;if(!s.started)s.started=true;openTimer(id)}
+function openTimer(id){const t=task(id),s=cur();s.setup=id;draft={min:t.min,sec:t.sec};$("minutesValue").textContent=draft.min;$("secondsValue").textContent=draft.sec;$("timerMissionIcon").textContent=t.icon;$("timerTitle").textContent="Set timer for "+t.title;$("timerText").textContent=t.prompt;modal("timerModal",true)}
+function runTimer(){const s=cur(),tot=draft.min*60+draft.sec;if(tot<=0){alert("Please set at least 1 second.");return}if(!s.setup)return;s.run=s.setup;s.remain=tot;s.total=tot;s.paused=false;s.ready=null;s.play=null;s.progress=0;modal("timerModal",false);renderTimer();modal("countdownModal",true);cue("start");speak(["Let's go, "+state.name+"! Timer started.","Adventure time, "+state.name+"!","You can do it, "+state.name+"!"][Math.floor(Math.random()*3)]);render();save();clearInterval(timerInt);timerInt=setInterval(()=>{if(s.paused)return;s.remain=Math.max(0,s.remain-.25);renderTimer();if(s.remain<=0){clearInterval(timerInt);timerInt=null;s.remain=0;s.ready=s.run;s.play=s.run;s.run=null;s.progress=0;modal("countdownModal",false);rain(["⏱️","✨","🎉"]);cue("play");speak(["Time is up, "+state.name+"! Your mission is ready.","Yay "+state.name+"! Tap play and finish it.","Amazing, "+state.name+"! You're ready for the fun part."][Math.floor(Math.random()*3)]);render();save()}},250)}
+function finish(id){const s=cur(),t=task(id);if(!s.done.includes(id))s.done.push(id);const all=s.done.length===list().length;s.ready=null;s.play=null;s.progress=0;s.reward={taskId:id,taskTitle:t.title,diamond:1,star:1,music:all&&state.mode==="morning"?1:0,sticker:t.sticker};s.chest=false;$("rewardEmoji").textContent=all?"🏆":"🎁";$("rewardTitle").textContent=all?`${state.name}'s big finish!`:"Prize time!";$("rewardText").textContent=all?`${state.name}, you finished every ${state.mode} task. Open the chest for a full celebration.`:`${state.name}, ${t.title.toLowerCase()} is done. Tap the chest for cheers and rewards.`;$("rewardGrid").style.display="none";$("nextMissionRow").style.display="none";if(all)streak();renderReward();modal("rewardModal",true);render();save()}
+function openChest(){const s=cur(),r=s.reward;if(!r||s.chest)return;s.chest=true;state.diamonds+=r.diamond;state.stars+=r.star;state.music+=r.music;if(r.sticker)state.stickers.push(r.sticker);$("rewardGrid").style.display="grid";$("nextMissionRow").style.display="flex";renderReward();rain(["💎","⭐","🎉","💖"]);cue(doneCount()===list().length?"done":"win");avatarPop();speak(doneCount()===list().length?["Hooray "+state.name+"! You finished the whole routine!","Amazing work, "+state.name+"! Morning quest complete!",state.name+", that was brilliant. You did every task!"][Math.floor(Math.random()*3)]:["Yay "+state.name+"! Great job on "+r.taskTitle+".","Nice work, "+state.name+"! Keep the adventure going.","Cheering for you, "+state.name+"! That task is complete."][Math.floor(Math.random()*3)]);renderPrizes();renderProgress();save()}
+function next(){cur().reward=null;cur().chest=false;modal("rewardModal",false);render();save()}
+function changeMode(){if(cur().run||cur().ready||cur().reward){alert("Finish or cancel the active task before switching modes.");return}state.mode=state.mode==="morning"?"bedtime":"morning";cue("toggle");render();setView("homeView");save()}
+function cheer(){ensureAudio();initVoices();avatarPop();setView("homeView");const s=cur(),a=doneCount()===list().length?["Champion vibes, "+state.name+"!","You already did it, "+state.name+"!","So proud of you, "+state.name+"!"]:s.ready?["Let's finish this one, "+state.name+"!","Tap play, "+state.name+". You're ready!","Go go go, "+state.name+"!"]:["You are doing great, "+state.name+"!","Pick any task you want, "+state.name+".","Big cheers for you, "+state.name+"!"];cue(doneCount()===list().length?"done":s.ready?"play":"win");speak(a[Math.floor(Math.random()*a.length)])}
 document.querySelectorAll(".navBtn").forEach(b=>b.onclick=()=>setView(b.dataset.view));
-$("startBtn").onclick=startAdventure;
-$("modeBtn").onclick=()=>{ state.mode = state.mode==="morning" ? "bedtime" : "morning"; resetToday(); };
-$("soundBtn").onclick=()=>{ state.soundOn=!state.soundOn; renderTop(); if(state.soundOn) beep(500,.04); save(); };
-$("saveNameBtn").onclick=()=>{ state.name = $("nameInput").value.trim() || "Kim"; renderAll(); save(); };
-$("resetDayBtn").onclick=resetToday;
-$("fullResetBtn").onclick=()=>{ if(confirm("Clear all saved progress and prizes?")) fullReset(); };
-$("minMinus").onclick=()=>{ state.timerMin=Math.max(0,state.timerMin-1); $("minutesValue").textContent=state.timerMin; };
-$("minPlus").onclick=()=>{ state.timerMin=Math.min(59,state.timerMin+1); $("minutesValue").textContent=state.timerMin; };
-$("secMinus").onclick=()=>{ state.timerSec=Math.max(0,state.timerSec-5); $("secondsValue").textContent=state.timerSec; };
-$("secPlus").onclick=()=>{ state.timerSec=Math.min(55,state.timerSec+5); $("secondsValue").textContent=state.timerSec; };
-$("cancelTimerBtn").onclick=()=>$("timerModal").classList.remove("show");
-$("approveTimerBtn").onclick=startTimer;
-$("pauseTimerBtn").onclick=()=>{ state.timerPaused=!state.timerPaused; renderCountdown(); save(); };
-$("cancelRunTimerBtn").onclick=()=>{ clearInterval(timerInt); timerInt=null; $("countdownModal").classList.remove("show"); state.runningMission=null; setExpression("ready"); save(); };
-$("chestBtn").onclick=openChest;
-$("nextMissionBtn").onclick=nextMission;
-
-load(); renderAll();
-if("serviceWorker" in navigator){ window.addEventListener("load", ()=> navigator.serviceWorker.register("service-worker.js").catch(()=>{})); }
+$("avatarTapBtn").onclick=cheer;$("startBtn").onclick=()=>{ensureAudio();start()};$("modeBtn").onclick=changeMode;$("soundBtn").onclick=()=>{state.soundOn=!state.soundOn;if(state.soundOn){ensureAudio();cue("toggle")}else if("speechSynthesis"in window)speechSynthesis.cancel();renderHero();save()};$("saveNameBtn").onclick=()=>{state.name=($("nameInput").value||"").trim()||"Kim";render();save()};$("resetDayBtn").onclick=resetMode;$("fullResetBtn").onclick=()=>{if(confirm("Clear all saved progress, prizes, and streak?"))fullReset()};
+$("minMinus").onclick=()=>{$("minutesValue").textContent=draft.min=Math.max(0,draft.min-1)};$("minPlus").onclick=()=>{$("minutesValue").textContent=draft.min=Math.min(59,draft.min+1)};$("secMinus").onclick=()=>{$("secondsValue").textContent=draft.sec=Math.max(0,draft.sec-5)};$("secPlus").onclick=()=>{$("secondsValue").textContent=draft.sec=Math.min(55,draft.sec+5)};
+$("cancelTimerBtn").onclick=()=>modal("timerModal",false);$("approveTimerBtn").onclick=()=>{ensureAudio();runTimer()};$("pauseTimerBtn").onclick=()=>{cur().paused=!cur().paused;renderTimer();save()};$("cancelRunTimerBtn").onclick=()=>{clearInterval(timerInt);timerInt=null;cur().run=null;cur().remain=0;cur().total=0;cur().paused=false;modal("countdownModal",false);render();save()};$("chestBtn").onclick=()=>{ensureAudio();openChest()};$("nextMissionBtn").onclick=next;$("closePlayBtn").onclick=()=>{cur().play=null;cur().progress=0;render();save()};
+window.addEventListener("resize",setVh);window.addEventListener("orientationchange",setVh);window.addEventListener("touchstart",()=>{ensureAudio();initVoices()},{passive:true,once:true});window.addEventListener("click",()=>{ensureAudio();initVoices()},{once:true});if("speechSynthesis"in window)speechSynthesis.onvoiceschanged=initVoices;
+load();setVh();initVoices();render();setView(state.view);if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("service-worker.js").catch(()=>{}));
 </script>
 </body>
 </html>
