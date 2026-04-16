@@ -2,9 +2,10 @@
   "name": "Kim Morning Quest",
   "short_name": "Kim Quest",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#f7f1fb",
-  "theme_color": "#f6d0e8",
+  "background_color": "#fff8ef",
+  "theme_color": "#ffdcb4",
   "icons": [
     {
       "src": "avatar-kim.png",
