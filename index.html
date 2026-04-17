@@ -157,15 +157,16 @@ input:focus{border-color:#b59dff;box-shadow:0 0 0 3px rgba(181,157,255,.16)}
 .navWrap{
   display:grid;grid-template-columns:1fr 1fr 1.24fr 1fr 1fr;align-items:end;gap:8px;padding:12px 10px 10px;border-radius:32px;border:1px solid rgba(255,255,255,.72);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);box-shadow:0 18px 40px rgba(111,84,170,.18)
 }
-.navBtn{min-height:66px;border-radius:20px;background:transparent;color:#7a7495;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:13px;font-weight:900}
+.navBtn{position:relative;z-index:2;min-height:66px;border-radius:20px;background:transparent;color:#7a7495;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:13px;font-weight:900}
 .navBtn .emo{width:34px;height:34px;border-radius:14px;display:grid;place-items:center;font-size:19px;line-height:1;background:rgba(255,255,255,.54);box-shadow:inset 0 1px 0 rgba(255,255,255,.7)}
 .navBtn.active{background:linear-gradient(135deg,rgba(242,198,235,.92),rgba(202,186,255,.92));color:#fff}
 .navBtn.active .emo{background:rgba(255,255,255,.2);box-shadow:none}
-.avatarDock{margin-top:-40px;background:transparent;display:flex;flex-direction:column;align-items:center;gap:6px}
+.avatarDock{position:relative;z-index:1;margin-top:-40px;background:transparent;display:flex;flex-direction:column;align-items:center;gap:6px}
 .avatar{
   position:relative;width:112px;height:112px;border-radius:50%;overflow:hidden;border:6px solid #fff4fd;box-shadow:0 16px 32px rgba(145,108,194,.22);
   background:linear-gradient(180deg,rgba(255,255,255,.22),rgba(255,255,255,.05)),url("avatar-kim.png") 47% 18%/208% auto no-repeat
 }
+.avatar,.avatar *{pointer-events:none}
 .avatar:before{content:"";position:absolute;inset:-8px;border-radius:50%;border:2px solid rgba(255,162,206,.58);animation:ringPulse 2.7s ease-in-out infinite}
 .avatar.pop{animation:avatarHop .42s ease}
 .aBadge{
@@ -199,7 +200,11 @@ input:focus{border-color:#b59dff;box-shadow:0 0 0 3px rgba(181,157,255,.16)}
 .timeText{font-size:42px;font-weight:900}
 .tag{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:7px 14px;border-radius:999px;background:rgba(241,232,255,.9);font-weight:900}
 .rewardEmoji{text-align:center;font-size:72px}
-.chest{margin-top:12px;text-align:center;font-size:94px;cursor:pointer;animation:chestBounce 1.3s ease-in-out infinite}
+.chest{
+  width:min(100%,168px);min-height:118px;margin:12px auto 0;padding:0;border:none;background:transparent;color:inherit;
+  display:grid;place-items:center;text-align:center;font-size:94px;cursor:pointer;touch-action:manipulation;animation:chestBounce 1.3s ease-in-out infinite
+}
+.chest:focus-visible{outline:3px solid rgba(157,142,255,.55);outline-offset:6px}
 .spark{position:fixed;z-index:40;pointer-events:none;font-size:22px;animation:fall 1.5s linear forwards}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
 @keyframes sunPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
@@ -402,7 +407,7 @@ input:focus{border-color:#b59dff;box-shadow:0 0 0 3px rgba(181,157,255,.16)}
   <div class="rewardEmoji" id="rewardEmoji">🎁</div>
   <h2 id="rewardTitle" style="text-align:center;margin:0">Prize time!</h2>
   <p id="rewardText" style="text-align:center;color:#675e84">Tap the chest to hear Kim's celebration.</p>
-  <div class="chest" id="chestBtn">🎁</div>
+  <button class="chest" id="chestBtn" type="button" aria-label="Open reward chest">🎁</button>
   <div class="rewardGrid" id="rewardGrid" style="display:none">
     <div class="rewardBox" id="rewardDiamond">💎 +1</div>
     <div class="rewardBox" id="rewardSticker">⭐ +1</div>
