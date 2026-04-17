@@ -1,4 +1,4 @@
-const CACHE = "kim-quest-pro-v2";
+const CACHE = "kim-quest-pro-v3";
 const ASSETS = [
   "./",
   "./index.html",
